@@ -17,7 +17,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha256-dABdfBfUoC8vJUBOwGVdm8L9qlMWaHTIfXt+7GnZCIo=" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
 
-<script class="next-config" data-name="main" type="application/json">{"hostname":"krythix.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.23.1","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js" defer></script>
+<script class="next-config" data-name="main" type="application/json">{"hostname":"krythix.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.23.1","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"always","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js" defer></script>
 
     <meta property="og:type" content="website">
 <meta property="og:title" content="Krythix的小站">
@@ -48,14 +48,17 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous" defer></script>
 <script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous" defer></script>
+<script src="/js/third-party/search/local-search.js" defer></script>
+
+
+
+
+
+
+
   
-
-
-
-
-
-
-  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 
 
 
@@ -92,6 +95,7 @@
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -100,11 +104,37 @@
 
 <nav class="site-nav">
   <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
   </ul>
 </nav>
 
 
 
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
 
 </header>
         
@@ -210,10 +240,25 @@
       <span class="post-meta-item-text">发表于</span>
       
 
-      <time title="创建时间：2025-06-15 00:00:00 / 修改时间：23:02:05" itemprop="dateCreated datePublished" datetime="2025-06-15T00:00:00+08:00">2025-06-15</time>
+      <time title="创建时间：2025-06-15 00:00:00 / 修改时间：23:40:43" itemprop="dateCreated datePublished" datetime="2025-06-15T00:00:00+08:00">2025-06-15</time>
     </span>
 
   
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span></span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>NaN:aN</span>
+    </span>
 </div>
 
         </div>
@@ -236,77 +281,14 @@
 <p><code>npm install</code>会安装好站点</p>
 <p><code>hexo g</code>构建好网站的结构, 保存在global文件夹里, 每次修改都应该运行这个指令</p>
 <p><code>hexo s</code>在本地模拟运行服务器, 可在浏览器查看效果</p>
-<p><img src="/2025/06/15/%E4%BD%BF%E7%94%A8hexo%E6%90%AD%E5%BB%BAgithub%E6%89%98%E7%AE%A1%E7%9A%84%E9%9D%99%E6%80%81%E5%8D%9A%E5%AE%A2%E7%BD%91%E7%AB%99/image-20250615220640729.png" alt="image-20250615220640729"></p>
-<p>文件夹结构: </p>
-<ol>
-<li>node_modules: 站点使用的插件</li>
-<li>public: 缓存, 生成的站点的根目录就在public</li>
-<li>source: 写的文章, 图片, 图标等资源应该在这里</li>
-<li>source&#x2F;_post: 文章目录</li>
-<li>themes: 主题文件夹</li>
-<li>_config.yml: hexo的主配置文件, 用来配置站点标题, 部署方法等基本信息</li>
-<li>_config.<theme_name>.yml: 主题的配置文件</li>
-<li>package.json: 安装的插件&#x2F;主题的信息</li>
-</ol>
-<h2 id="三-安装NexT主题"><a href="#三-安装NexT主题" class="headerlink" title="三, 安装NexT主题"></a>三, 安装NexT主题</h2><ol>
-<li><p><code>git clone https://github.com/next-theme/hexo-theme-next themes/next</code>把主题下载下来. </p>
-</li>
-<li><p>把next主题文件夹放在theme文件夹里. </p>
-</li>
-<li><p>修改_config.yml的配置:</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">theme: next</span><br></pre></td></tr></table></figure>
-
-<p><strong>这里的next是theme文件夹里的主题文件夹的名字</strong></p>
-</li>
-</ol>
-<h2 id="四-基本配置"><a href="#四-基本配置" class="headerlink" title="四, 基本配置"></a>四, 基本配置</h2><h3 id="blog-config-yml"><a href="#blog-config-yml" class="headerlink" title="blog&#x2F;_config.yml"></a>blog&#x2F;_config.yml</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"># Site</span><br><span class="line">title: # 站点的名字, 显示在标签页上</span><br><span class="line">subtitle: 这是subtitle</span><br><span class="line">description: &#x27;&#x27;</span><br><span class="line">author: # 作者名字</span><br><span class="line">language: zh-CN</span><br><span class="line">timezone: Asia/Shanghai</span><br><span class="line"># URL</span><br><span class="line">url: https://&#123;name&#125;.github.io</span><br><span class="line"># Writing</span><br><span class="line">post_asset_folder: true # 在使用hexo new创建文章时, 会新建一个放照片的目录</span><br></pre></td></tr></table></figure>
-
-<h3 id="blog-config-next-yml"><a href="#blog-config-next-yml" class="headerlink" title="blog&#x2F;_config.next.yml"></a>blog&#x2F;_config.next.yml</h3><h4 id="主题"><a href="#主题" class="headerlink" title="主题"></a>主题</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># Schemes</span><br><span class="line">scheme: Muse</span><br><span class="line">#scheme: Mist</span><br><span class="line">#scheme: Pisces</span><br><span class="line">#scheme: Gemini</span><br></pre></td></tr></table></figure>
-<h4 id="图标"><a href="#图标" class="headerlink" title="图标"></a>图标</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"># 站点的图标, 以source文件夹为根目录</span><br><span class="line">favicon:</span><br><span class="line">  small: /images/favicon.png</span><br><span class="line">  medium: /images/favicon.png</span><br><span class="line">  apple_touch_icon: /images/favicon.png</span><br><span class="line">  safari_pinned_tab: /images/favicon.png</span><br><span class="line">  #android_manifest: /manifest.json</span><br></pre></td></tr></table></figure>
-<h4 id="菜单"><a href="#菜单" class="headerlink" title="菜单"></a>菜单</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">menu:</span><br><span class="line">  home: / || fa fa-home</span><br><span class="line">  about: /about/ || fa fa-user</span><br><span class="line">  tags: /tags/ || fa fa-tags</span><br><span class="line">  categories: /categories/ || fa fa-th</span><br><span class="line">  archives: /archives/ || fa fa-archive</span><br><span class="line">  #schedule: /schedule/ || fa fa-calendar</span><br><span class="line">  #sitemap: /sitemap.xml || fa fa-sitemap</span><br><span class="line">  #commonweal: /404/ || fa fa-heartbeat</span><br></pre></td></tr></table></figure>
-<p>要创建菜单项的文件夹, 使用命令<code>hexo new page &#123;menu_name&#125;</code></p>
-<p>就在source下创建了对应菜单的文件夹</p>
-<p>还要手动修改菜单的信息: </p>
-<p>例如tags菜单, 还需要修改source&#x2F;tags&#x2F;index.html(主要修改type项):</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">---</span><br><span class="line">title: TAGS</span><br><span class="line">date: 2023-01-01</span><br><span class="line">type: &quot;tags&quot;</span><br><span class="line">comments: false</span><br><span class="line">---</span><br></pre></td></tr></table></figure>
-<h4 id="头像"><a href="#头像" class="headerlink" title="头像"></a>头像</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">avatar:</span><br><span class="line">  url: /images/avater.jpg</span><br></pre></td></tr></table></figure>
-
-<h4 id="社交账号"><a href="#社交账号" class="headerlink" title="社交账号"></a>社交账号</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">social:</span><br><span class="line">  GitHub: https://github.com/&#123;name&#125; || fab fa-github</span><br></pre></td></tr></table></figure>
-
-<h2 id="五-部署到github"><a href="#五-部署到github" class="headerlink" title="五, 部署到github"></a>五, 部署到github</h2><h3 id="创建github仓库"><a href="#创建github仓库" class="headerlink" title="创建github仓库"></a>创建github仓库</h3><p>仓库名字: {username}.github.io</p>
-<h3 id="配置好git"><a href="#配置好git" class="headerlink" title="配置好git"></a>配置好git</h3><p><code>git config --global user.name &quot;name&quot;</code></p>
-<p><code>git config --global user.email &quot;name&quot;</code></p>
-<p><code>ssh-keygen -t rsa -C &quot;&#123;email&#125;&quot;</code></p>
-<p>添加ssh公钥到github账号</p>
-<h3 id="在hexo中安装部署到github的插件"><a href="#在hexo中安装部署到github的插件" class="headerlink" title="在hexo中安装部署到github的插件"></a>在hexo中安装部署到github的插件</h3><p><code>npm install hexo-deployer-git --save</code></p>
-<ul>
-<li><p>包会被安装在blog&#x2F;node-modules下</p>
-</li>
-<li><p>–save表示把包的信息记录在package.json中</p>
-</li>
-</ul>
-<h3 id="config-yml配置使用github部署"><a href="#config-yml配置使用github部署" class="headerlink" title="_config.yml配置使用github部署"></a>_config.yml配置使用github部署</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">deploy:</span><br><span class="line">  type: git</span><br><span class="line">  repo: 你的仓库路径</span><br><span class="line">  branch: main</span><br></pre></td></tr></table></figure>
-
-<h3 id="推送博客站点到github"><a href="#推送博客站点到github" class="headerlink" title="推送博客站点到github"></a>推送博客站点到github</h3><p><code>hexo d</code></p>
-<h3 id="访问博客"><a href="#访问博客" class="headerlink" title="访问博客"></a>访问博客</h3><p><code>https://&#123;name&#125;.github.io</code></p>
-<h2 id="六-添加文章"><a href="#六-添加文章" class="headerlink" title="六, 添加文章"></a>六, 添加文章</h2><p><code>hexo new &#123;passagename&#125;</code></p>
-<p>只需编辑source&#x2F;_post&#x2F;里的md文件</p>
-<h2 id="七-一些问题"><a href="#七-一些问题" class="headerlink" title="七, 一些问题"></a>七, 一些问题</h2><h3 id="部署后图片路径不对"><a href="#部署后图片路径不对" class="headerlink" title="部署后图片路径不对"></a>部署后图片路径不对</h3><p>_post目录是这样的结构: </p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">_post:</span><br><span class="line">	artical.md</span><br><span class="line">	artical</span><br><span class="line">		image1.jpg</span><br><span class="line">		image2.jpg</span><br></pre></td></tr></table></figure>
-
-<p>hexo部署后生成的文件夹(public&#x2F;2025&#x2F;6&#x2F;14&#x2F;artical)结构: </p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">artical</span><br><span class="line">	index.html</span><br><span class="line">	image1.jpg</span><br><span class="line">	image2.jpg</span><br></pre></td></tr></table></figure>
-
-<p>index.html中图片的路径是: </p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/./artical/image1.jpg(多了一个artical)</span><br></pre></td></tr></table></figure>
-
-<blockquote>
-<p>解决方法: 让hexo生成index.html时, 在artical后加一个..&#x2F;</p>
-</blockquote>
-<p>修改文件blog\node_modules\hexo-renderer-marked\lib\renderer.js: </p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (!<span class="regexp">/^(#|\/\/|http(s)?:)/</span>.<span class="title function_">test</span>(href) &amp;&amp; !relative_link &amp;&amp; prependRoot) &#123;</span><br><span class="line">  <span class="keyword">if</span> (!href.<span class="title function_">startsWith</span>(<span class="string">&#x27;/&#x27;</span>) &amp;&amp; !href.<span class="title function_">startsWith</span>(<span class="string">&#x27;\\&#x27;</span>) &amp;&amp; postPath) &#123;</span><br><span class="line">    <span class="keyword">const</span> <span class="title class_">PostAsset</span> = hexo.<span class="title function_">model</span>(<span class="string">&#x27;PostAsset&#x27;</span>);</span><br><span class="line">    <span class="comment">// findById requires forward slash</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// ==================================改动:</span></span><br><span class="line">    <span class="keyword">const</span> fixPostPath = <span class="title function_">join</span>(postPath, <span class="string">&#x27;../&#x27;</span>);</span><br><span class="line">    <span class="keyword">const</span> asset = <span class="title class_">PostAsset</span>.<span class="title function_">findById</span>(<span class="title function_">join</span>(fixPostPath, href.<span class="title function_">replace</span>(<span class="regexp">/\\/g</span>, <span class="string">&#x27;/&#x27;</span>)));</span><br><span class="line">    <span class="comment">//const asset = PostAsset.findById(join(postPath, href.replace(/\\/g, &#x27;/&#x27;)));</span></span><br><span class="line">    <span class="comment">// ====================================;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// asset.path is backward slash in Windows</span></span><br><span class="line">    <span class="keyword">if</span> (asset) href = asset.<span class="property">path</span>.<span class="title function_">replace</span>(<span class="regexp">/\\/g</span>, <span class="string">&#x27;/&#x27;</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  href = url_for.<span class="title function_">call</span>(hexo, href);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2025/06/15/%E4%BD%BF%E7%94%A8hexo%E6%90%AD%E5%BB%BAgithub%E6%89%98%E7%AE%A1%E7%9A%84%E9%9D%99%E6%80%81%E5%8D%9A%E5%AE%A2%E7%BD%91%E7%AB%99/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -381,6 +363,21 @@
     </span>
 
   
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span></span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>NaN:aN</span>
+    </span>
 </div>
 
         </div>
@@ -452,7 +449,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2025-06-15 14:10:45" itemprop="dateModified" datetime="2025-06-15T14:10:45+08:00">2025-06-15</time>
+      <time title="修改时间：2025-06-15 23:24:31" itemprop="dateModified" datetime="2025-06-15T23:24:31+08:00">2025-06-15</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -465,6 +462,21 @@
     </span>
 
   
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span></span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>NaN:aN</span>
+    </span>
 </div>
 
         </div>
@@ -479,43 +491,14 @@
 </blockquote>
 <p>集线器(hub)可以连接多个设备构成网络, 但是半双工, 只能支持很少的设备连接, 工作在物理层</p>
 <p>光猫的一个功能是把光纤的光信号转化为电信号, 是物理层</p>
-<h2 id="二-数据链路层-MAC层"><a href="#二-数据链路层-MAC层" class="headerlink" title="二, 数据链路层(MAC层)"></a>二, 数据链路层(MAC层)</h2><blockquote>
-<p>数据链路层在物理层提供的服务的基础上向网络层提供服务，其最基本的服务是将源自物理层来的数据可靠地传输到相邻节点的目标机网络层。</p>
-</blockquote>
-<h3 id="交换机-switch"><a href="#交换机-switch" class="headerlink" title="交换机(switch)"></a>交换机(switch)</h3><blockquote>
-<p>为接入交换机的任意两个网络节点提供独享的电信号通路</p>
-</blockquote>
-<p>每个设备有一个全球唯一的48位的mac地址. 多个设备连接到交换机的网口上, 交换机内部维护一张网口和mac地址的映射表, 记录交换机的每个网口所连接的设备的mac地址.</p>
-<p>当有设备(mac1)想要向另一个设备(mac2)发送信息时, 他会给交换机发送一个头部记录了mac1和mac2的信息, 交换机会查询映射表, 找到mac2地址所对应的网口, 并发送信息. 如果在映射表中没有找到mac2, 他会向所有网口广播这条信息, mac2设备收到这个信息后把响应发送给交换机, 交换机再发给设备mac1, 并把mac2所对应的网口记录在表里.</p>
-<h4 id="交换机级联"><a href="#交换机级联" class="headerlink" title="交换机级联:"></a>交换机级联:</h4><p>假设有一个网络: </p>
-<p><img src="/2025/06/14/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/image-20250615130310582.png" alt="image-20250615130310582"></p>
-<p>如果A想给D发送信息, switch1发现自己的映射表中没有D的信息, 他就会进行广播. switch2接受到广播后, 知道D设备在自己的二号端口上(如果不知道, switch2还会广播), 便把信息发给D. D响应后, switch1会记录D设备的mac地址对应自己的第四个端口.</p>
-<h4 id="不足"><a href="#不足" class="headerlink" title="不足"></a>不足</h4><p>交换机依然不能构成足够大的网络, 设备和级联层数多后会引起广播泛洪, 且交换机中映射表的大小不够</p>
-<h2 id="三-网络层-IP层"><a href="#三-网络层-IP层" class="headerlink" title="三, 网络层(IP层)"></a>三, 网络层(IP层)</h2><h3 id="ip地址-ipv4"><a href="#ip地址-ipv4" class="headerlink" title="ip地址(ipv4)"></a>ip地址(ipv4)</h3><p>ipv4是一个32位(8*4)的地址, 例如192.168.0.1, 每位数字从0-255.</p>
-<p>ip像mac一样用来表示设备, 但是ip可能会变化, 一个设备可能有多个ip.</p>
-<h3 id="路由表"><a href="#路由表" class="headerlink" title="路由表"></a>路由表</h3><p>一个设备A想给另一个设备B发信息, 知道它的ip后, 还要知道把信息发给谁才行. 路由表就记录了应该发给谁.</p>
-<p>使用命令<code>route</code>可以查看设备的路由表</p>
-<p><img src="/2025/06/14/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/image-20250615132731532.png" alt="image-20250615132731532"></p>
-<h3 id="路由器-router"><a href="#路由器-router" class="headerlink" title="路由器(router)"></a>路由器(router)</h3><blockquote>
-<p>是连接两个或多个网络的硬件设备，在网络间起网关的作用，是读取每一个数据包中的地址然后决定如何传送的专用智能性的网络设备。</p>
-</blockquote>
-<p><img src="/2025/06/14/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/image-20250615135448474.png" alt="image-20250615135448474"></p>
-<ul>
-<li><p>192.168.0.0&#x2F;24中的24是掩码, 表示所有高24位都是192.168.0.x的设备都在这个网络中.</p>
-</li>
-<li><p>路由器连接两个网络, 他既有网络1的ip, 也有网络2的ip, 在两个网络中当网关</p>
-</li>
-</ul>
-<p>如果A要给C(192.168.1.5)发消息, A便会查自己的路由表, 查到给C的ip的信息应该发给网关192.168.0.1. 路由器收到后查路由器自己的路由表, 便把信息从192.168.0.0发送出去.</p>
-<p>发送的线路就是:</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">A	-&gt;	router, router-&gt;C</span><br><span class="line">(0.5)	(0.1)	(1.1)	(1.5)</span><br></pre></td></tr></table></figure>
-
-<p>有了路由器, 每次信息发送都是在子网内进行的.</p>
-<p>在子网中, 知道ip地址, 还要通过arp协议转换为mac地址才可以进行通信.</p>
-<ul>
-<li>平时用的路由器同时有路由器, 交换器, DHCP服务器等功能</li>
-</ul>
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2025/06/14/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -548,7 +531,39 @@
     </span>
     <span class="author" itemprop="copyrightHolder">Krythix</span>
   </div>
-  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">NaNm</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">NaN:aN</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
   </div>
 
     </div>
