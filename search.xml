@@ -12,60 +12,6 @@
       </tags>
   </entry>
   <entry>
-    <title>计算机网络基础知识</title>
-    <url>/2025/06/14/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/</url>
-    <content><![CDATA[<h2 id="一-物理层"><a href="#一-物理层" class="headerlink" title="一, 物理层"></a>一, 物理层</h2><blockquote>
-<p>为传输数据所需要的物理链路创建、维持、拆除，而提供具有机械的，电子的，功能的和规范的特性</p>
-</blockquote>
-<p>集线器(hub)可以连接多个设备构成网络, 但是半双工, 只能支持很少的设备连接, 工作在物理层</p>
-<p>光猫的一个功能是把光纤的光信号转化为电信号, 是物理层</p>
-<span id="more"></span>
-
-<h2 id="二-数据链路层-MAC层"><a href="#二-数据链路层-MAC层" class="headerlink" title="二, 数据链路层(MAC层)"></a>二, 数据链路层(MAC层)</h2><blockquote>
-<p>数据链路层在物理层提供的服务的基础上向网络层提供服务，其最基本的服务是将源自物理层来的数据可靠地传输到相邻节点的目标机网络层。</p>
-</blockquote>
-<h3 id="交换机-switch"><a href="#交换机-switch" class="headerlink" title="交换机(switch)"></a>交换机(switch)</h3><blockquote>
-<p>为接入交换机的任意两个网络节点提供独享的电信号通路</p>
-</blockquote>
-<p>每个设备有一个全球唯一的48位的mac地址. 多个设备连接到交换机的网口上, 交换机内部维护一张网口和mac地址的映射表, 记录交换机的每个网口所连接的设备的mac地址.</p>
-<p>当有设备(mac1)想要向另一个设备(mac2)发送信息时, 他会给交换机发送一个头部记录了mac1和mac2的信息, 交换机会查询映射表, 找到mac2地址所对应的网口, 并发送信息. 如果在映射表中没有找到mac2, 他会向所有网口广播这条信息, mac2设备收到这个信息后把响应发送给交换机, 交换机再发给设备mac1, 并把mac2所对应的网口记录在表里.</p>
-<h4 id="交换机级联"><a href="#交换机级联" class="headerlink" title="交换机级联:"></a>交换机级联:</h4><p>假设有一个网络: </p>
-<p><img src="/2025/06/14/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/image-20250615130310582.png" alt="image-20250615130310582"></p>
-<p>如果A想给D发送信息, switch1发现自己的映射表中没有D的信息, 他就会进行广播. switch2接受到广播后, 知道D设备在自己的二号端口上(如果不知道, switch2还会广播), 便把信息发给D. D响应后, switch1会记录D设备的mac地址对应自己的第四个端口.</p>
-<h4 id="不足"><a href="#不足" class="headerlink" title="不足"></a>不足</h4><p>交换机依然不能构成足够大的网络, 设备和级联层数多后会引起广播泛洪, 且交换机中映射表的大小不够</p>
-<h2 id="三-网络层-IP层"><a href="#三-网络层-IP层" class="headerlink" title="三, 网络层(IP层)"></a>三, 网络层(IP层)</h2><h3 id="ip地址-ipv4"><a href="#ip地址-ipv4" class="headerlink" title="ip地址(ipv4)"></a>ip地址(ipv4)</h3><p>ipv4是一个32位(8*4)的地址, 例如192.168.0.1, 每位数字从0-255.</p>
-<p>ip像mac一样用来表示设备, 但是ip可能会变化, 一个设备可能有多个ip.</p>
-<h3 id="路由表"><a href="#路由表" class="headerlink" title="路由表"></a>路由表</h3><p>一个设备A想给另一个设备B发信息, 知道它的ip后, 还要知道把信息发给谁才行. 路由表就记录了应该发给谁.</p>
-<p>使用命令<code>route</code>可以查看设备的路由表</p>
-<p><img src="/2025/06/14/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/image-20250615132731532.png" alt="image-20250615132731532"></p>
-<h3 id="路由器-router"><a href="#路由器-router" class="headerlink" title="路由器(router)"></a>路由器(router)</h3><blockquote>
-<p>是连接两个或多个网络的硬件设备，在网络间起网关的作用，是读取每一个数据包中的地址然后决定如何传送的专用智能性的网络设备。</p>
-</blockquote>
-<p><img src="/2025/06/14/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/image-20250615135448474.png" alt="image-20250615135448474"></p>
-<ul>
-<li><p>192.168.0.0&#x2F;24中的24是掩码, 表示所有高24位都是192.168.0.x的设备都在这个网络中.</p>
-</li>
-<li><p>路由器连接两个网络, 他既有网络1的ip, 也有网络2的ip, 在两个网络中当网关</p>
-</li>
-</ul>
-<p>如果A要给C(192.168.1.5)发消息, A便会查自己的路由表, 查到给C的ip的信息应该发给网关192.168.0.1. 路由器收到后查路由器自己的路由表, 便把信息从192.168.0.0发送出去.</p>
-<p>发送的线路就是:</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">A	-&gt;	router, router-&gt;C</span><br><span class="line">(0.5)	(0.1)	(1.1)	(1.5)</span><br></pre></td></tr></table></figure>
-
-<p>有了路由器, 每次信息发送都是在子网内进行的.</p>
-<p>在子网中, 知道ip地址, 还要通过arp协议转换为mac地址才可以进行通信.</p>
-<ul>
-<li>平时用的路由器同时有路由器, 交换器, DHCP服务器等功能</li>
-</ul>
-]]></content>
-      <categories>
-        <category>计算机网络</category>
-      </categories>
-      <tags>
-        <tag>计算机网络</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>使用hexo搭建github托管的静态网站</title>
     <url>/2025/06/15/%E4%BD%BF%E7%94%A8hexo%E6%90%AD%E5%BB%BAgithub%E6%89%98%E7%AE%A1%E7%9A%84%E9%9D%99%E6%80%81%E5%8D%9A%E5%AE%A2%E7%BD%91%E7%AB%99/</url>
     <content><![CDATA[<h2 id="一-软件安装"><a href="#一-软件安装" class="headerlink" title="一, 软件安装"></a>一, 软件安装</h2><ol>
@@ -167,6 +113,60 @@
 ]]></content>
       <tags>
         <tag>网站</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>计算机网络基础知识</title>
+    <url>/2025/06/14/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/</url>
+    <content><![CDATA[<h2 id="一-物理层"><a href="#一-物理层" class="headerlink" title="一, 物理层"></a>一, 物理层</h2><blockquote>
+<p>为传输数据所需要的物理链路创建、维持、拆除，而提供具有机械的，电子的，功能的和规范的特性</p>
+</blockquote>
+<p>集线器(hub)可以连接多个设备构成网络, 但是半双工, 只能支持很少的设备连接, 工作在物理层</p>
+<p>光猫的一个功能是把光纤的光信号转化为电信号, 是物理层</p>
+<span id="more"></span>
+
+<h2 id="二-数据链路层-MAC层"><a href="#二-数据链路层-MAC层" class="headerlink" title="二, 数据链路层(MAC层)"></a>二, 数据链路层(MAC层)</h2><blockquote>
+<p>数据链路层在物理层提供的服务的基础上向网络层提供服务，其最基本的服务是将源自物理层来的数据可靠地传输到相邻节点的目标机网络层。</p>
+</blockquote>
+<h3 id="交换机-switch"><a href="#交换机-switch" class="headerlink" title="交换机(switch)"></a>交换机(switch)</h3><blockquote>
+<p>为接入交换机的任意两个网络节点提供独享的电信号通路</p>
+</blockquote>
+<p>每个设备有一个全球唯一的48位的mac地址. 多个设备连接到交换机的网口上, 交换机内部维护一张网口和mac地址的映射表, 记录交换机的每个网口所连接的设备的mac地址.</p>
+<p>当有设备(mac1)想要向另一个设备(mac2)发送信息时, 他会给交换机发送一个头部记录了mac1和mac2的信息, 交换机会查询映射表, 找到mac2地址所对应的网口, 并发送信息. 如果在映射表中没有找到mac2, 他会向所有网口广播这条信息, mac2设备收到这个信息后把响应发送给交换机, 交换机再发给设备mac1, 并把mac2所对应的网口记录在表里.</p>
+<h4 id="交换机级联"><a href="#交换机级联" class="headerlink" title="交换机级联:"></a>交换机级联:</h4><p>假设有一个网络: </p>
+<p><img src="/2025/06/14/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/image-20250615130310582.png" alt="image-20250615130310582"></p>
+<p>如果A想给D发送信息, switch1发现自己的映射表中没有D的信息, 他就会进行广播. switch2接受到广播后, 知道D设备在自己的二号端口上(如果不知道, switch2还会广播), 便把信息发给D. D响应后, switch1会记录D设备的mac地址对应自己的第四个端口.</p>
+<h4 id="不足"><a href="#不足" class="headerlink" title="不足"></a>不足</h4><p>交换机依然不能构成足够大的网络, 设备和级联层数多后会引起广播泛洪, 且交换机中映射表的大小不够</p>
+<h2 id="三-网络层-IP层"><a href="#三-网络层-IP层" class="headerlink" title="三, 网络层(IP层)"></a>三, 网络层(IP层)</h2><h3 id="ip地址-ipv4"><a href="#ip地址-ipv4" class="headerlink" title="ip地址(ipv4)"></a>ip地址(ipv4)</h3><p>ipv4是一个32位(8*4)的地址, 例如192.168.0.1, 每位数字从0-255.</p>
+<p>ip像mac一样用来表示设备, 但是ip可能会变化, 一个设备可能有多个ip.</p>
+<h3 id="路由表"><a href="#路由表" class="headerlink" title="路由表"></a>路由表</h3><p>一个设备A想给另一个设备B发信息, 知道它的ip后, 还要知道把信息发给谁才行. 路由表就记录了应该发给谁.</p>
+<p>使用命令<code>route</code>可以查看设备的路由表</p>
+<p><img src="/2025/06/14/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/image-20250615132731532.png" alt="image-20250615132731532"></p>
+<h3 id="路由器-router"><a href="#路由器-router" class="headerlink" title="路由器(router)"></a>路由器(router)</h3><blockquote>
+<p>是连接两个或多个网络的硬件设备，在网络间起网关的作用，是读取每一个数据包中的地址然后决定如何传送的专用智能性的网络设备。</p>
+</blockquote>
+<p><img src="/2025/06/14/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/image-20250615135448474.png" alt="image-20250615135448474"></p>
+<ul>
+<li><p>192.168.0.0&#x2F;24中的24是掩码, 表示所有高24位都是192.168.0.x的设备都在这个网络中.</p>
+</li>
+<li><p>路由器连接两个网络, 他既有网络1的ip, 也有网络2的ip, 在两个网络中当网关</p>
+</li>
+</ul>
+<p>如果A要给C(192.168.1.5)发消息, A便会查自己的路由表, 查到给C的ip的信息应该发给网关192.168.0.1. 路由器收到后查路由器自己的路由表, 便把信息从192.168.0.0发送出去.</p>
+<p>发送的线路就是:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">A	-&gt;	router, router-&gt;C</span><br><span class="line">(0.5)	(0.1)	(1.1)	(1.5)</span><br></pre></td></tr></table></figure>
+
+<p>有了路由器, 每次信息发送都是在子网内进行的.</p>
+<p>在子网中, 知道ip地址, 还要通过arp协议转换为mac地址才可以进行通信.</p>
+<ul>
+<li>平时用的路由器同时有路由器, 交换器, DHCP服务器等功能</li>
+</ul>
+]]></content>
+      <categories>
+        <category>计算机网络</category>
+      </categories>
+      <tags>
+        <tag>计算机网络</tag>
       </tags>
   </entry>
 </search>
