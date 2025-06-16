@@ -1,17 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>docker的基本使用</title>
-    <url>/2025/06/14/docker%E7%9A%84%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8/</url>
-    <content><![CDATA[]]></content>
-      <categories>
-        <category>工具</category>
-      </categories>
-      <tags>
-        <tag>docker</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>使用hexo搭建github托管的静态网站</title>
     <url>/2025/06/15/%E4%BD%BF%E7%94%A8hexo%E6%90%AD%E5%BB%BAgithub%E6%89%98%E7%AE%A1%E7%9A%84%E9%9D%99%E6%80%81%E5%8D%9A%E5%AE%A2%E7%BD%91%E7%AB%99/</url>
     <content><![CDATA[<h2 id="一-软件安装"><a href="#一-软件安装" class="headerlink" title="一, 软件安装"></a>一, 软件安装</h2><ol>
@@ -23,12 +12,12 @@
 <p><code>npm install -g hexo-cli</code></p>
 </li>
 </ol>
+<span id="more"></span>
+
 <h2 id="二-初始化"><a href="#二-初始化" class="headerlink" title="二, 初始化"></a>二, 初始化</h2><p><code>hexo init blog</code>会自动创建一个blog文件夹</p>
 <p><code>npm install</code>会安装好站点</p>
 <p><code>hexo g</code>构建好网站的结构, 保存在global文件夹里, 每次修改都应该运行这个指令</p>
 <p><code>hexo s</code>在本地模拟运行服务器, 可在浏览器查看效果</p>
-<span id="more"></span>
-
 <p><img src="/2025/06/15/%E4%BD%BF%E7%94%A8hexo%E6%90%AD%E5%BB%BAgithub%E6%89%98%E7%AE%A1%E7%9A%84%E9%9D%99%E6%80%81%E5%8D%9A%E5%AE%A2%E7%BD%91%E7%AB%99/image-20250615220640729.png" alt="image-20250615220640729"></p>
 <p>文件夹结构: </p>
 <ol>
