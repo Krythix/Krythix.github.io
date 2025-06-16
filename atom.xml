@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Krythix的小站</title>
+  
+  <subtitle>生活不是等待暴风雨过去，而是学会在雨中跳舞。</subtitle>
+  <link href="https://krythix.github.io/atom.xml" rel="self"/>
+  
+  <link href="https://krythix.github.io/"/>
+  <updated>2025-06-15T15:40:43.089Z</updated>
+  <id>https://krythix.github.io/</id>
+  
+  <author>
+    <name>Krythix</name>
+    
+  </author>
+  
+  <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>使用hexo搭建github托管的静态网站</title>
+    <link href="https://krythix.github.io/2025/06/15/%E4%BD%BF%E7%94%A8hexo%E6%90%AD%E5%BB%BAgithub%E6%89%98%E7%AE%A1%E7%9A%84%E9%9D%99%E6%80%81%E5%8D%9A%E5%AE%A2%E7%BD%91%E7%AB%99/"/>
+    <id>https://krythix.github.io/2025/06/15/%E4%BD%BF%E7%94%A8hexo%E6%90%AD%E5%BB%BAgithub%E6%89%98%E7%AE%A1%E7%9A%84%E9%9D%99%E6%80%81%E5%8D%9A%E5%AE%A2%E7%BD%91%E7%AB%99/</id>
+    <published>2025-06-14T16:00:00.000Z</published>
+    <updated>2025-06-15T15:40:43.089Z</updated>
+    
+    
+    <summary type="html">&lt;h2 id=&quot;一-软件安装&quot;&gt;&lt;a href=&quot;#一-软件安装&quot; class=&quot;headerlink&quot; title=&quot;一, 软件安装&quot;&gt;&lt;/a&gt;一, 软件安装&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;git&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;node.js (npm是nodejs的包管理工具)&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;hexo&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;npm install -g hexo-cli&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&quot;二-初始化&quot;&gt;&lt;a href=&quot;#二-初始化&quot; class=&quot;headerlink&quot; title=&quot;二, 初始化&quot;&gt;&lt;/a&gt;二, 初始化&lt;/h2&gt;&lt;p&gt;&lt;code&gt;hexo init blog&lt;/code&gt;会自动创建一个blog文件夹&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;npm install&lt;/code&gt;会安装好站点&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;hexo g&lt;/code&gt;构建好网站的结构, 保存在global文件夹里, 每次修改都应该运行这个指令&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;hexo s&lt;/code&gt;在本地模拟运行服务器, 可在浏览器查看效果&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="网站" scheme="https://krythix.github.io/tags/%E7%BD%91%E7%AB%99/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>docker的基本使用</title>
+    <link href="https://krythix.github.io/2025/06/14/docker%E7%9A%84%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8/"/>
+    <id>https://krythix.github.io/2025/06/14/docker%E7%9A%84%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8/</id>
+    <published>2025-06-14T14:00:35.000Z</published>
+    <updated>2025-06-15T04:59:03.427Z</updated>
+    
+    
+    
+    
+    <category term="工具" scheme="https://krythix.github.io/categories/%E5%B7%A5%E5%85%B7/"/>
+    
+    
+    <category term="docker" scheme="https://krythix.github.io/tags/docker/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>计算机网络基础知识</title>
+    <link href="https://krythix.github.io/2025/06/14/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/"/>
+    <id>https://krythix.github.io/2025/06/14/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/</id>
+    <published>2025-06-14T13:51:53.000Z</published>
+    <updated>2025-06-15T15:24:31.666Z</updated>
+    
+    
+    <summary type="html">&lt;h2 id=&quot;一-物理层&quot;&gt;&lt;a href=&quot;#一-物理层&quot; class=&quot;headerlink&quot; title=&quot;一, 物理层&quot;&gt;&lt;/a&gt;一, 物理层&lt;/h2&gt;&lt;blockquote&gt;
+&lt;p&gt;为传输数据所需要的物理链路创建、维持、拆除，而提供具有机械的，电子的，功能的和规范的特性&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;集线器(hub)可以连接多个设备构成网络, 但是半双工, 只能支持很少的设备连接, 工作在物理层&lt;/p&gt;
+&lt;p&gt;光猫的一个功能是把光纤的光信号转化为电信号, 是物理层&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="计算机网络" scheme="https://krythix.github.io/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/"/>
+    
+    
+    <category term="计算机网络" scheme="https://krythix.github.io/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/"/>
+    
+  </entry>
+  
+</feed>
