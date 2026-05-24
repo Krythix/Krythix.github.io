@@ -241,7 +241,7 @@
       <span class="post-meta-item-text">发表于</span>
       
 
-      <time title="创建时间：2026-05-24 15:00:00 / 修改时间：21:10:21" itemprop="dateCreated datePublished" datetime="2026-05-24T15:00:00+08:00">2026-05-24</time>
+      <time title="创建时间：2026-05-24 15:00:00 / 修改时间：21:24:38" itemprop="dateCreated datePublished" datetime="2026-05-24T15:00:00+08:00">2026-05-24</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -278,49 +278,7 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <h2 id="一-什么是Docker"><a href="#一-什么是Docker" class="headerlink" title="一, 什么是Docker"></a>一, 什么是Docker</h2><h3 id="为什么需要Docker"><a href="#为什么需要Docker" class="headerlink" title="为什么需要Docker"></a>为什么需要Docker</h3><p>在软件开发中, 经常遇到一个问题: “明明在我机器上能跑, 为什么到你那里就不行了?” </p>
-<p>原因很简单 — 每个人的机器环境不同: 操作系统不同、软件版本不同、依赖库不同、配置文件不同。传统做法是手动配置环境, 容易出错且不可复现。</p>
-<p>Docker 解决的就是这个问题: <strong>把应用和它所依赖的一切(代码、运行时、系统工具、系统库、配置)打包在一起, 形成一个标准化的、可移植的单元。</strong></p>
-<blockquote>
-<p>Docker 是一个开源的容器化平台, 让你可以将应用程序及其所有依赖打包到一个轻量级、可移植的容器中, 然后在任何支持Docker的环境中运行。</p>
-</blockquote>
-<h3 id="容器-vs-虚拟机"><a href="#容器-vs-虚拟机" class="headerlink" title="容器 vs 虚拟机"></a>容器 vs 虚拟机</h3><p>理解容器最好的方式是把它和虚拟机(VM)对比:</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th>虚拟机</th>
-<th>Docker容器</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><strong>虚拟化层次</strong></td>
-<td>硬件层</td>
-<td>操作系统层</td>
-</tr>
-<tr>
-<td><strong>启动速度</strong></td>
-<td>分钟级</td>
-<td>秒级</td>
-</tr>
-<tr>
-<td><strong>资源占用</strong></td>
-<td>每个VM有完整OS, 几GB</td>
-<td>共享宿主机内核, 几十MB</td>
-</tr>
-<tr>
-<td><strong>隔离性</strong></td>
-<td>完全隔离</td>
-<td>进程级隔离</td>
-</tr>
-<tr>
-<td><strong>镜像大小</strong></td>
-<td>通常几GB</td>
-<td>通常几十到几百MB</td>
-</tr>
-</tbody></table>
-<p>简单来说: <strong>虚拟机虚拟的是硬件, 容器虚拟的是操作系统。</strong> Docker容器共享宿主机的操作系统内核, 所以轻量得多。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">传统部署:          虚拟机:              容器(Docker):</span><br><span class="line">┌─────────┐      ┌─────────┐          ┌─────────┐</span><br><span class="line">│   App   │      │   App   │          │   App   │</span><br><span class="line">├─────────┤      ├─────────┤          ├─────────┤</span><br><span class="line">│ 依赖/配置 │      │  Bins/Libs│          │ 依赖/配置 │</span><br><span class="line">├─────────┤      ├─────────┤          ├─────────┤</span><br><span class="line">│   OS    │      │ Guest OS│          │Container│</span><br><span class="line">├─────────┤      ├─────────┤          │ Engine  │</span><br><span class="line">│ Server  │      │Hypervisor│         ├─────────┤</span><br><span class="line">│         │      ├─────────┤          │   OS    │</span><br><span class="line">│         │      │   OS    │          ├─────────┤</span><br><span class="line">│         │      ├─────────┤          │ Server  │</span><br><span class="line">│         │      │ Server  │          │         │</span><br><span class="line">└─────────┘      └─────────┘          └─────────┘</span><br></pre></td></tr></table></figure>
+          <p>Docker 是当今最流行的容器化平台，无论是开发、测试还是生产部署，它都能让你摆脱”在我机器上能跑”的困境。本教程从零开始，覆盖 Docker 的核心概念、镜像与容器的全部常用操作、Dockerfile 编写、数据与网络管理、Docker Compose 多容器编排，以及三个完整的实战案例。读完这篇文章，你将能够独立使用 Docker 管理应用。</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2026/05/24/Docker%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/#more" rel="contents">

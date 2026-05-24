@@ -522,7 +522,10 @@ mutex1.lock();
   <entry>
     <title>Docker使用教程</title>
     <url>/2026/05/24/Docker%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/</url>
-    <content><![CDATA[<h2 id="一-什么是Docker"><a href="#一-什么是Docker" class="headerlink" title="一, 什么是Docker"></a>一, 什么是Docker</h2><h3 id="为什么需要Docker"><a href="#为什么需要Docker" class="headerlink" title="为什么需要Docker"></a>为什么需要Docker</h3><p>在软件开发中, 经常遇到一个问题: “明明在我机器上能跑, 为什么到你那里就不行了?” </p>
+    <content><![CDATA[<p>Docker 是当今最流行的容器化平台，无论是开发、测试还是生产部署，它都能让你摆脱”在我机器上能跑”的困境。本教程从零开始，覆盖 Docker 的核心概念、镜像与容器的全部常用操作、Dockerfile 编写、数据与网络管理、Docker Compose 多容器编排，以及三个完整的实战案例。读完这篇文章，你将能够独立使用 Docker 管理应用。</p>
+<span id="more"></span>
+
+<h2 id="一-什么是Docker"><a href="#一-什么是Docker" class="headerlink" title="一, 什么是Docker"></a>一, 什么是Docker</h2><h3 id="为什么需要Docker"><a href="#为什么需要Docker" class="headerlink" title="为什么需要Docker"></a>为什么需要Docker</h3><p>在软件开发中, 经常遇到一个问题: “明明在我机器上能跑, 为什么到你那里就不行了?” </p>
 <p>原因很简单 — 每个人的机器环境不同: 操作系统不同、软件版本不同、依赖库不同、配置文件不同。传统做法是手动配置环境, 容易出错且不可复现。</p>
 <p>Docker 解决的就是这个问题: <strong>把应用和它所依赖的一切(代码、运行时、系统工具、系统库、配置)打包在一起, 形成一个标准化的、可移植的单元。</strong></p>
 <blockquote>
@@ -566,7 +569,7 @@ mutex1.lock();
 <p>简单来说: <strong>虚拟机虚拟的是硬件, 容器虚拟的是操作系统。</strong> Docker容器共享宿主机的操作系统内核, 所以轻量得多。</p>
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">传统部署:          虚拟机:              容器(Docker):</span><br><span class="line">┌─────────┐      ┌─────────┐          ┌─────────┐</span><br><span class="line">│   App   │      │   App   │          │   App   │</span><br><span class="line">├─────────┤      ├─────────┤          ├─────────┤</span><br><span class="line">│ 依赖/配置 │      │  Bins/Libs│          │ 依赖/配置 │</span><br><span class="line">├─────────┤      ├─────────┤          ├─────────┤</span><br><span class="line">│   OS    │      │ Guest OS│          │Container│</span><br><span class="line">├─────────┤      ├─────────┤          │ Engine  │</span><br><span class="line">│ Server  │      │Hypervisor│         ├─────────┤</span><br><span class="line">│         │      ├─────────┤          │   OS    │</span><br><span class="line">│         │      │   OS    │          ├─────────┤</span><br><span class="line">│         │      ├─────────┤          │ Server  │</span><br><span class="line">│         │      │ Server  │          │         │</span><br><span class="line">└─────────┘      └─────────┘          └─────────┘</span><br></pre></td></tr></table></figure>
 
-<span id="more"></span>
+
 
 <h2 id="二-Docker核心概念"><a href="#二-Docker核心概念" class="headerlink" title="二, Docker核心概念"></a>二, Docker核心概念</h2><p>Docker 有三个最核心的概念, 理解它们就理解了 Docker 的根基:</p>
 <h3 id="1-镜像-Image"><a href="#1-镜像-Image" class="headerlink" title="1. 镜像 (Image)"></a>1. 镜像 (Image)</h3><p><strong>镜像是容器的蓝图, 是一个只读模板。</strong></p>
