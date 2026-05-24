@@ -3,14 +3,15 @@
   <entry>
     <title>c++多线程</title>
     <url>/2025/06/17/c-%E5%A4%9A%E7%BA%BF%E7%A8%8B/</url>
-    <content><![CDATA[<h2 id="一-线程"><a href="#一-线程" class="headerlink" title="一, 线程"></a>一, 线程</h2><p>头文件: <code>&lt;thread&gt;</code></p>
+    <content><![CDATA[<p>C++11 引入了标准线程库，为 C++ 提供了跨平台的多线程编程能力。本文介绍线程的创建与管理、互斥锁与条件变量等同步机制、promise&#x2F;future 异步任务模型，以及原子操作等核心内容。</p>
+<span id="more"></span>
+
+<h2 id="一-线程"><a href="#一-线程" class="headerlink" title="一, 线程"></a>一, 线程</h2><p>头文件: <code>&lt;thread&gt;</code></p>
 <p>线程类: <code>thread::thread(F&amp;&amp; f, Args&amp;&amp;... args)</code></p>
 <ol>
 <li>创建线程并开始线程:</li>
 </ol>
   <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	<span class="type">int</span> a, b, result;</span><br><span class="line">	<span class="comment">// ref 生成reference_wrapper对象, 可以转换为T&amp;类型</span></span><br><span class="line">	<span class="function">thread <span class="title">t1</span><span class="params">(func1, a, b, ref(result))</span></span>;</span><br><span class="line">	<span class="function">classA a</span></span><br><span class="line"><span class="function">	thread <span class="title">t2</span><span class="params">(classA::func, &amp;a, a, b)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<span id="more"></span>
 
 <ol start="2">
 <li><p>阻塞等待线程结束:</p>
@@ -25,8 +26,6 @@
 </ul>
 </li>
 </ol>
-<!-- more -->
-
 <h2 id="二-promise和future"><a href="#二-promise和future" class="headerlink" title="二, promise和future"></a>二, promise和future</h2><p>完成单次的异步请求和响应</p>
 <p>promise用来发送数据, future从promise中获得用来接受数据.</p>
 <p>一个promise对应一个future</p>
@@ -180,7 +179,10 @@ mutex1.lock();
   <entry>
     <title>使用hexo搭建github托管的静态网站</title>
     <url>/2025/06/15/%E4%BD%BF%E7%94%A8hexo%E6%90%AD%E5%BB%BAgithub%E6%89%98%E7%AE%A1%E7%9A%84%E9%9D%99%E6%80%81%E5%8D%9A%E5%AE%A2%E7%BD%91%E7%AB%99/</url>
-    <content><![CDATA[<h2 id="一-软件安装"><a href="#一-软件安装" class="headerlink" title="一, 软件安装"></a>一, 软件安装</h2><ol>
+    <content><![CDATA[<p>本文详细介绍如何使用 Hexo 框架搭建基于 GitHub Pages 托管的静态博客网站，涵盖环境安装、站点初始化、NexT 主题配置、文章写作和自动化部署的全流程。</p>
+<span id="more"></span>
+
+<h2 id="一-软件安装"><a href="#一-软件安装" class="headerlink" title="一, 软件安装"></a>一, 软件安装</h2><ol>
 <li><p>git</p>
 </li>
 <li><p>node.js (npm是nodejs的包管理工具)</p>
@@ -189,8 +191,6 @@ mutex1.lock();
 <p><code>npm install -g hexo-cli</code></p>
 </li>
 </ol>
-<span id="more"></span>
-
 <h2 id="二-初始化"><a href="#二-初始化" class="headerlink" title="二, 初始化"></a>二, 初始化</h2><p><code>hexo init blog</code>会自动创建一个blog文件夹</p>
 <p><code>npm install</code>会安装好站点</p>
 <p><code>hexo g</code>构建好网站的结构, 保存在global文件夹里, 每次修改都应该运行这个指令</p>
@@ -284,7 +284,10 @@ mutex1.lock();
   <entry>
     <title>动态规划</title>
     <url>/2026/03/31/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/</url>
-    <content><![CDATA[<h1 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h1><h2 id="双调欧几里德旅行商问题"><a href="#双调欧几里德旅行商问题" class="headerlink" title="双调欧几里德旅行商问题"></a>双调欧几里德旅行商问题</h2><p><img src="/2026/03/31/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/Screenshot_2026-03-31-16-21-04-335_com.orion.note.png" alt="Screenshot_2026-03-31-16-21-04-335_com.orion.note"></p>
+    <content><![CDATA[<p>动态规划是一种通过将问题分解为重叠子问题来求解最优化问题的算法设计方法。本文以双调欧几里德旅行商问题为例，详细讲解动态规划的状态定义、状态转移方程的推导以及最优子结构的证明。</p>
+<span id="more"></span>
+
+<h1 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h1><h2 id="双调欧几里德旅行商问题"><a href="#双调欧几里德旅行商问题" class="headerlink" title="双调欧几里德旅行商问题"></a>双调欧几里德旅行商问题</h2><p><img src="/2026/03/31/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/Screenshot_2026-03-31-16-21-04-335_com.orion.note.png" alt="Screenshot_2026-03-31-16-21-04-335_com.orion.note"></p>
 <p>原问题是NP-hard问题， 简化后可以用动态规划求新问题的最优解。</p>
 <p>把n个点按x坐标进行排序， 选择若干点为路径环上方的点，其余作为路径环下方的点，连接。问题的最优解一定是其中的某一种选择方法，选择过程类似01背包。</p>
 <h3 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h3><ul>
@@ -304,8 +307,6 @@ mutex1.lock();
 <li><p>结果：除两端， 每个点都连接两个其他点，且这两个点的x坐标分局此点的两侧，所以第n-1个点一定与第n个点相连。所以<code>result=dp[n][n-1] + dist(n, n-1)</code></p>
 </li>
 </ul>
-<span id="more"></span>
-
 <h3 id="证明"><a href="#证明" class="headerlink" title="证明"></a>证明</h3><ol>
 <li>最优子结构</li>
 <li>状态转移完备且正确</li>
@@ -339,7 +340,10 @@ mutex1.lock();
   <entry>
     <title>操作系统原理1进程</title>
     <url>/2026/03/29/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%8E%9F%E7%90%861%E8%BF%9B%E7%A8%8B/</url>
-    <content><![CDATA[<h1 id="一，进程"><a href="#一，进程" class="headerlink" title="一，进程"></a>一，进程</h1><h3 id="进程的状态"><a href="#进程的状态" class="headerlink" title="进程的状态"></a>进程的状态</h3><ol>
+    <content><![CDATA[<p>介绍进程的基本概念、进程控制块的结构、进程的五种状态及其转换，以及进程创建、阻塞、唤醒、销毁等控制原语。</p>
+<span id="more"></span>
+
+<h1 id="一，进程"><a href="#一，进程" class="headerlink" title="一，进程"></a>一，进程</h1><h3 id="进程的状态"><a href="#进程的状态" class="headerlink" title="进程的状态"></a>进程的状态</h3><ol>
 <li><p>运行态</p>
 </li>
 <li><p>就绪态</p>
@@ -384,13 +388,14 @@ mutex1.lock();
   <entry>
     <title>计算机网络基础知识</title>
     <url>/2025/06/14/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/</url>
-    <content><![CDATA[<h2 id="一-物理层"><a href="#一-物理层" class="headerlink" title="一, 物理层"></a>一, 物理层</h2><blockquote>
+    <content><![CDATA[<p>计算机网络是分布式系统的基础。本文从物理层到网络层逐层讲解网络通信的原理，包括集线器、交换机、路由器的功能与区别，以及 MAC 地址、IP 地址、路由表、ARP 协议等核心概念。</p>
+<span id="more"></span>
+
+<h2 id="一-物理层"><a href="#一-物理层" class="headerlink" title="一, 物理层"></a>一, 物理层</h2><blockquote>
 <p>为传输数据所需要的物理链路创建、维持、拆除，而提供具有机械的，电子的，功能的和规范的特性</p>
 </blockquote>
 <p>集线器(hub)可以连接多个设备构成网络, 但是半双工, 只能支持很少的设备连接, 工作在物理层</p>
 <p>光猫的一个功能是把光纤的光信号转化为电信号, 是物理层</p>
-<span id="more"></span>
-
 <h2 id="二-数据链路层-MAC层"><a href="#二-数据链路层-MAC层" class="headerlink" title="二, 数据链路层(MAC层)"></a>二, 数据链路层(MAC层)</h2><blockquote>
 <p>数据链路层在物理层提供的服务的基础上向网络层提供服务，其最基本的服务是将源自物理层来的数据可靠地传输到相邻节点的目标机网络层。</p>
 </blockquote>
@@ -438,7 +443,10 @@ mutex1.lock();
   <entry>
     <title>设计模式-状态模式</title>
     <url>/2025/06/17/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/</url>
-    <content><![CDATA[<h2 id="状态模式"><a href="#状态模式" class="headerlink" title="状态模式"></a>状态模式</h2><p><img src="/2025/06/17/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/image-20250617190747435.png" alt="image-20250617190747435"></p>
+    <content><![CDATA[<p>状态模式是一种行为设计模式，允许对象在其内部状态改变时改变其行为，仿佛对象的类发生了改变。本文讲解状态模式的结构、适用场景和实现方法。</p>
+<span id="more"></span>
+
+<h2 id="状态模式"><a href="#状态模式" class="headerlink" title="状态模式"></a>状态模式</h2><p><img src="/2025/06/17/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/image-20250617190747435.png" alt="image-20250617190747435"></p>
 <blockquote>
 <p>状态模式: 当一个对象的内在状态改变时允许改变其行为, 这个对象看起来像是改变了其类.</p>
 </blockquote>
@@ -453,7 +461,10 @@ mutex1.lock();
   <entry>
     <title>操作系统原理-互斥同步通信</title>
     <url>/2026/04/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%8E%9F%E7%90%86-%E4%BA%92%E6%96%A5%E5%90%8C%E6%AD%A5%E9%80%9A%E4%BF%A1/</url>
-    <content><![CDATA[<h1 id="进程互斥"><a href="#进程互斥" class="headerlink" title="进程互斥"></a>进程互斥</h1><blockquote>
+    <content><![CDATA[<p>介绍进程互斥、同步与通信的核心机制，包括软硬件实现互斥的方法、信号量与管程、经典同步问题，以及消息传递等进程间通信方式。</p>
+<span id="more"></span>
+
+<h1 id="进程互斥"><a href="#进程互斥" class="headerlink" title="进程互斥"></a>进程互斥</h1><blockquote>
 <p>多个进程访问变量时，因实际交叉次序不同而导致结果不同，叫做竞争条件</p>
 </blockquote>
 <h2 id="共享变量和临界区"><a href="#共享变量和临界区" class="headerlink" title="共享变量和临界区"></a>共享变量和临界区</h2><ul>

@@ -348,7 +348,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2026-04-07 22:42:46" itemprop="dateModified" datetime="2026-04-07T22:42:46+08:00">2026-04-07</time>
+      <time title="修改时间：2026-05-24 21:27:28" itemprop="dateModified" datetime="2026-05-24T21:27:28+08:00">2026-05-24</time>
     </span>
 
   
@@ -376,68 +376,15 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <h1 id="进程互斥"><a href="#进程互斥" class="headerlink" title="进程互斥"></a>进程互斥</h1><blockquote>
-<p>多个进程访问变量时，因实际交叉次序不同而导致结果不同，叫做竞争条件</p>
-</blockquote>
-<h2 id="共享变量和临界区"><a href="#共享变量和临界区" class="headerlink" title="共享变量和临界区"></a>共享变量和临界区</h2><ul>
-<li>共享变量：多个进程访问的变量</li>
-<li>临界区：访问共享变量的程序段</li>
-</ul>
-<h2 id="进程互斥-1"><a href="#进程互斥-1" class="headerlink" title="进程互斥"></a>进程互斥</h2><p>多个进程进入关于同一组共享变量的临界区可能发生时间相关的错误，叫做进程互斥</p>
-<h3 id="进程互斥原则"><a href="#进程互斥原则" class="headerlink" title="进程互斥原则"></a>进程互斥原则</h3><ol>
-<li>互斥性</li>
-<li>进展性</li>
-<li>有限等待性（不严格）：公平性</li>
-</ol>
-<h3 id="软件实现"><a href="#软件实现" class="headerlink" title="软件实现"></a>软件实现</h3><ol>
-<li><p>dekker算法</p>
-<p><img src="/home/krythix/.config/Typora/typora-user-images/image-20260402211837447.png" alt="image-20260402211837447"><img src="/home/krythix/.config/Typora/typora-user-images/image-20260402211853948.png" alt="image-20260402211853948"></p>
-</li>
-<li><p>peterson算法</p>
-<p>flag表示请求资源，turn表示轮到的进程</p>
-<p><img src="/home/krythix/.config/Typora/typora-user-images/image-20260402211945277.png" alt="image-20260402211945277"></p>
-</li>
-<li><p>lamport面包店算法</p>
-<p><img src="/home/krythix/.config/Typora/typora-user-images/image-20260402212010416.png" alt="image-20260402212010416"></p>
-<p><img src="/home/krythix/.config/Typora/typora-user-images/image-20260402212022614.png" alt="image-20260402212022614"></p>
-</li>
-<li><p>Eisenberg-Mcguire算法</p>
-<p><img src="/home/krythix/.config/Typora/typora-user-images/image-20260402212059967.png" alt="image-20260402212059967"></p>
-</li>
-</ol>
-<h3 id="硬件实现"><a href="#硬件实现" class="headerlink" title="硬件实现"></a>硬件实现</h3><h2 id="进程同步"><a href="#进程同步" class="headerlink" title="进程同步"></a>进程同步</h2><h3 id="条件变量"><a href="#条件变量" class="headerlink" title="条件变量"></a>条件变量</h3><h4 id="接口"><a href="#接口" class="headerlink" title="接口"></a>接口</h4><ol>
-<li><code>wait(Lock)</code>: 释放lock并等待, 唤醒后重新加锁</li>
-<li><code>signal</code>: 唤醒一个等待者</li>
-<li><code>broadcast</code>: 唤醒所有等待者</li>
-</ol>
-<h4 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h4><p><img src="/2025/06/17/c-%E5%A4%9A%E7%BA%BF%E7%A8%8B/-%E4%BA%92%E6%96%A5%E5%90%8C%E6%AD%A5%E9%80%9A%E4%BF%A1/image-20260407162425854.png" alt="image-20260407162425854"></p>
-<h4 id="实例-生产者消费者模型"><a href="#实例-生产者消费者模型" class="headerlink" title="实例: 生产者消费者模型"></a>实例: 生产者消费者模型</h4><p><img src="/2025/06/17/c-%E5%A4%9A%E7%BA%BF%E7%A8%8B/-%E4%BA%92%E6%96%A5%E5%90%8C%E6%AD%A5%E9%80%9A%E4%BF%A1/image-20260407162544312.png" alt="image-20260407162544312"></p>
-<h3 id="信号量-Semaphore"><a href="#信号量-Semaphore" class="headerlink" title="信号量(Semaphore)"></a>信号量(Semaphore)</h3><h4 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h4><p><img src="/2025/06/17/c-%E5%A4%9A%E7%BA%BF%E7%A8%8B/-%E4%BA%92%E6%96%A5%E5%90%8C%E6%AD%A5%E9%80%9A%E4%BF%A1/image-20260407162938805.png" alt="image-20260407162938805"></p>
-<p><img src="/2025/06/17/c-%E5%A4%9A%E7%BA%BF%E7%A8%8B/-%E4%BA%92%E6%96%A5%E5%90%8C%E6%AD%A5%E9%80%9A%E4%BF%A1/image-20260407162802151.png" alt="image-20260407162802151"></p>
-<ul>
-<li>P: 当value&lt;&#x3D;0时挂起(先减一)</li>
-<li>V: 当value&lt;0时唤醒一个(先加一)</li>
-</ul>
-<p>在实现时要保证pv操作的原子性</p>
-<h4 id="特例"><a href="#特例" class="headerlink" title="特例"></a>特例</h4><p>把value初始化为1可以实现进程互斥, p加锁, v解锁(第一个之后调用p的进程挂起并进入队列)</p>
-<p>初始为非一正整数可以管理同种组合资源</p>
-<h4 id="实例"><a href="#实例" class="headerlink" title="实例"></a>实例</h4><h5 id="生产者消费者问题"><a href="#生产者消费者问题" class="headerlink" title="生产者消费者问题"></a>生产者消费者问题</h5><p><img src="/2025/06/17/c-%E5%A4%9A%E7%BA%BF%E7%A8%8B/-%E4%BA%92%E6%96%A5%E5%90%8C%E6%AD%A5%E9%80%9A%E4%BF%A1/image-20260407215311118.png" alt="image-20260407215311118"></p>
-<p><img src="/2025/06/17/c-%E5%A4%9A%E7%BA%BF%E7%A8%8B/-%E4%BA%92%E6%96%A5%E5%90%8C%E6%AD%A5%E9%80%9A%E4%BF%A1/image-20260407215319461.png" alt="image-20260407215319461"></p>
-<ul>
-<li>S1表示buffer中的空位数量</li>
-<li>S2表示buffer中的物品数量</li>
-</ul>
-<h5 id="读写问题"><a href="#读写问题" class="headerlink" title="读写问题"></a>读写问题</h5><p><img src="/2025/06/17/c-%E5%A4%9A%E7%BA%BF%E7%A8%8B/-%E4%BA%92%E6%96%A5%E5%90%8C%E6%AD%A5%E9%80%9A%E4%BF%A1/image-20260407215809637.png" alt="image-20260407215809637"></p>
-<p>readCount全程&gt;&#x3D;0</p>
-<p>把信号量用作互斥锁</p>
-<p>第一个读者申请锁, 后面的读者直接读</p>
-<p>写者都需要申请锁</p>
-<h3 id="管程"><a href="#管程" class="headerlink" title="管程"></a>管程</h3><p>封装共享变量, 并提供操作共享变量的方法(保证互斥, 只有一个进程可以调用). 管程是一种保证互斥, 实现同步的抽象结构</p>
-<h4 id="实例-生产者消费者"><a href="#实例-生产者消费者" class="headerlink" title="实例: 生产者消费者"></a>实例: 生产者消费者</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;pthread.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> BUF_SIZE 5</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 管程数据</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    <span class="type">int</span> buffer[BUF_SIZE];</span><br><span class="line">    <span class="type">int</span> in, out, count;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 互斥锁 → 实现管程的「自动互斥」</span></span><br><span class="line">    <span class="type">pthread_mutex_t</span> mutex;</span><br><span class="line">    <span class="comment">// 条件变量 → 实现同步</span></span><br><span class="line">    <span class="type">pthread_cond_t</span> notFull;</span><br><span class="line">    <span class="type">pthread_cond_t</span> notEmpty;</span><br><span class="line">&#125; ProducerConsumer;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 初始化</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">init</span><span class="params">(ProducerConsumer *pc)</span> &#123;</span><br><span class="line">    pc-&gt;in = pc-&gt;out = pc-&gt;count = <span class="number">0</span>;</span><br><span class="line">    pthread_mutex_init(&amp;pc-&gt;mutex, <span class="literal">NULL</span>);</span><br><span class="line">    pthread_cond_init(&amp;pc-&gt;notFull, <span class="literal">NULL</span>);</span><br><span class="line">    pthread_cond_init(&amp;pc-&gt;notEmpty, <span class="literal">NULL</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 插入（生产者）</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">insert</span><span class="params">(ProducerConsumer *pc, <span class="type">int</span> item)</span> &#123;</span><br><span class="line">    <span class="comment">// 加锁 → 对应伪代码的 monitor 互斥</span></span><br><span class="line">    pthread_mutex_lock(&amp;pc-&gt;mutex);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 等待条件</span></span><br><span class="line">    <span class="keyword">while</span> (pc-&gt;count == BUF_SIZE) &#123;</span><br><span class="line">        pthread_cond_wait(&amp;pc-&gt;notFull, &amp;pc-&gt;mutex);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 操作数据</span></span><br><span class="line">    pc-&gt;buffer[pc-&gt;in] = item;</span><br><span class="line">    pc-&gt;in = (pc-&gt;in + <span class="number">1</span>) % BUF_SIZE;</span><br><span class="line">    pc-&gt;count++;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 唤醒</span></span><br><span class="line">    pthread_cond_signal(&amp;pc-&gt;notEmpty);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 解锁</span></span><br><span class="line">    pthread_mutex_unlock(&amp;pc-&gt;mutex);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 取出（消费者）</span></span><br><span class="line"><span class="type">int</span> <span class="title function_">remove_item</span><span class="params">(ProducerConsumer *pc)</span> &#123;</span><br><span class="line">    pthread_mutex_lock(&amp;pc-&gt;mutex);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (pc-&gt;count == <span class="number">0</span>) &#123;</span><br><span class="line">        pthread_cond_wait(&amp;pc-&gt;notEmpty, &amp;pc-&gt;mutex);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="type">int</span> item = pc-&gt;buffer[pc-&gt;out];</span><br><span class="line">    pc-&gt;out = (pc-&gt;out + <span class="number">1</span>) % BUF_SIZE;</span><br><span class="line">    pc-&gt;count--;</span><br><span class="line"></span><br><span class="line">    pthread_cond_signal(&amp;pc-&gt;notFull);</span><br><span class="line">    pthread_mutex_unlock(&amp;pc-&gt;mutex);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> item;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-
-
+          <p>介绍进程互斥、同步与通信的核心机制，包括软硬件实现互斥的方法、信号量与管程、经典同步问题，以及消息传递等进程间通信方式。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2026/04/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%8E%9F%E7%90%86-%E4%BA%92%E6%96%A5%E5%90%8C%E6%AD%A5%E9%80%9A%E4%BF%A1/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -499,7 +446,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2026-04-02 20:45:17" itemprop="dateModified" datetime="2026-04-02T20:45:17+08:00">2026-04-02</time>
+      <time title="修改时间：2026-05-24 21:27:52" itemprop="dateModified" datetime="2026-05-24T21:27:52+08:00">2026-05-24</time>
     </span>
 
   
@@ -509,7 +456,7 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>2.6k</span>
+      <span>2.7k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
@@ -527,26 +474,7 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <h1 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h1><h2 id="双调欧几里德旅行商问题"><a href="#双调欧几里德旅行商问题" class="headerlink" title="双调欧几里德旅行商问题"></a>双调欧几里德旅行商问题</h2><p><img src="/2026/03/31/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/Screenshot_2026-03-31-16-21-04-335_com.orion.note.png" alt="Screenshot_2026-03-31-16-21-04-335_com.orion.note"></p>
-<p>原问题是NP-hard问题， 简化后可以用动态规划求新问题的最优解。</p>
-<p>把n个点按x坐标进行排序， 选择若干点为路径环上方的点，其余作为路径环下方的点，连接。问题的最优解一定是其中的某一种选择方法，选择过程类似01背包。</p>
-<h3 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h3><ul>
-<li><p>从前n个点中进行选择，分为上下两部分，f[i, j]表示上半部分以i结束，下半部分以j结束时已经选择的两部分曲线的长度和，且上下两部分要选择所有前n个点。因为i，j的选择是对称的，只考虑i &gt; j</p>
-</li>
-<li><p>状态转移方程</p>
-<ol>
-<li><p>i &#x3D; j+1:  <code>f[i, j] = max( f[j, k] + dist(k, i) )</code>   (1&lt;&#x3D;k&lt;j)</p>
-<p>i为j后的第一个点，所以i的前一个点不能由j推导来，应该由1～j-1中的点推导而来。</p>
-<p>由于k&lt;j, 且问题有对称性，将f[k, j]改为f[j, k]</p>
-</li>
-<li><p>i &gt; j+1: <code>f[i, j] = f[i-1, j] + dist[i, i-1]</code></p>
-<p>因为必须把前n个点都选择完， 所以[j+1, i-1]之间的点都必须在i对应的路径上，i的前一个点只能是i-1</p>
-</li>
-</ol>
-</li>
-<li><p>结果：除两端， 每个点都连接两个其他点，且这两个点的x坐标分局此点的两侧，所以第n-1个点一定与第n个点相连。所以<code>result=dp[n][n-1] + dist(n, n-1)</code></p>
-</li>
-</ul>
+          <p>动态规划是一种通过将问题分解为重叠子问题来求解最优化问题的算法设计方法。本文以双调欧几里德旅行商问题为例，详细讲解动态规划的状态定义、状态转移方程的推导以及最优子结构的证明。</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2026/03/31/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/#more" rel="contents">
@@ -616,7 +544,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2026-04-07 16:14:04" itemprop="dateModified" datetime="2026-04-07T16:14:04+08:00">2026-04-07</time>
+      <time title="修改时间：2026-05-24 21:27:29" itemprop="dateModified" datetime="2026-05-24T21:27:29+08:00">2026-05-24</time>
     </span>
 
   
@@ -626,7 +554,7 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>167</span>
+      <span>219</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
@@ -644,44 +572,15 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <h1 id="一，进程"><a href="#一，进程" class="headerlink" title="一，进程"></a>一，进程</h1><h3 id="进程的状态"><a href="#进程的状态" class="headerlink" title="进程的状态"></a>进程的状态</h3><ol>
-<li><p>运行态</p>
-</li>
-<li><p>就绪态</p>
-</li>
-<li><p>等待态</p>
-</li>
-</ol>
-<h2 id="进程的控制"><a href="#进程的控制" class="headerlink" title="进程的控制"></a>进程的控制</h2><h3 id="原语"><a href="#原语" class="headerlink" title="原语"></a>原语</h3><blockquote>
-<p>由若干指令组成， 是一种原子操作</p>
-</blockquote>
-<p>在内核态下运行， 通过开关中断实现</p>
-<h4 id="进程控制的原语"><a href="#进程控制的原语" class="headerlink" title="进程控制的原语"></a>进程控制的原语</h4><ol>
-<li>create</li>
-<li>block</li>
-<li>wakeup</li>
-<li>destroy</li>
-</ol>
-<h3 id="进程的挂起和激活"><a href="#进程的挂起和激活" class="headerlink" title="进程的挂起和激活"></a>进程的挂起和激活</h3><ol>
-<li>挂起：suspend， 从内存移动到外存</li>
-<li>激活：active</li>
-</ol>
-<p><img src="/2026/03/29/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%8E%9F%E7%90%861%E8%BF%9B%E7%A8%8B/image-20260330191157883.png"></p>
-<ol>
-<li><p>静止</p>
-<ul>
-<li>静止就绪：放在外存， 不调度</li>
-<li>精致阻塞：等待事件</li>
-</ul>
-</li>
-<li><p>活动</p>
-<ul>
-<li>活动就绪：等待调度</li>
-<li>活动阻塞：等待唤醒</li>
-</ul>
-</li>
-</ol>
-
+          <p>介绍进程的基本概念、进程控制块的结构、进程的五种状态及其转换，以及进程创建、阻塞、唤醒、销毁等控制原语。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2026/03/29/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%8E%9F%E7%90%861%E8%BF%9B%E7%A8%8B/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -743,7 +642,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2026-03-29 22:08:16" itemprop="dateModified" datetime="2026-03-29T22:08:16+08:00">2026-03-29</time>
+      <time title="修改时间：2026-05-24 21:27:50" itemprop="dateModified" datetime="2026-05-24T21:27:50+08:00">2026-05-24</time>
     </span>
 
   
@@ -753,7 +652,7 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>6.9k</span>
+      <span>7k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
@@ -771,12 +670,7 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <h2 id="一-线程"><a href="#一-线程" class="headerlink" title="一, 线程"></a>一, 线程</h2><p>头文件: <code>&lt;thread&gt;</code></p>
-<p>线程类: <code>thread::thread(F&amp;&amp; f, Args&amp;&amp;... args)</code></p>
-<ol>
-<li>创建线程并开始线程:</li>
-</ol>
-  <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	<span class="type">int</span> a, b, result;</span><br><span class="line">	<span class="comment">// ref 生成reference_wrapper对象, 可以转换为T&amp;类型</span></span><br><span class="line">	<span class="function">thread <span class="title">t1</span><span class="params">(func1, a, b, ref(result))</span></span>;</span><br><span class="line">	<span class="function">classA a</span></span><br><span class="line"><span class="function">	thread <span class="title">t2</span><span class="params">(classA::func, &amp;a, a, b)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+          <p>C++11 引入了标准线程库，为 C++ 提供了跨平台的多线程编程能力。本文介绍线程的创建与管理、互斥锁与条件变量等同步机制、promise&#x2F;future 异步任务模型，以及原子操作等核心内容。</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2025/06/17/c-%E5%A4%9A%E7%BA%BF%E7%A8%8B/#more" rel="contents">
@@ -825,13 +719,13 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">34k</span>
+    <span title="站点总字数">35k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">1:02</span>
+    <span title="站点阅读时长">1:03</span>
   </span>
 </div>
 <div class="busuanzi-count">
