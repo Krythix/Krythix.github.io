@@ -169,18 +169,18 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">6</span>
+          <span class="site-state-item-count">8</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
-        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-count">2</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-count">6</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -202,6 +202,300 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://krythix.github.io/2026/05/24/Docker%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avater.jpg">
+      <meta itemprop="name" content="Krythix">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Krythix的小站">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content=" | Krythix的小站">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2026/05/24/Docker%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/" class="post-title-link" itemprop="url">Docker使用教程</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2026-05-24 15:00:00 / 修改时间：21:10:21" itemprop="dateCreated datePublished" datetime="2026-05-24T15:00:00+08:00">2026-05-24</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%B7%A5%E5%85%B7/" itemprop="url" rel="index"><span itemprop="name">工具</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>18k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>32 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h2 id="一-什么是Docker"><a href="#一-什么是Docker" class="headerlink" title="一, 什么是Docker"></a>一, 什么是Docker</h2><h3 id="为什么需要Docker"><a href="#为什么需要Docker" class="headerlink" title="为什么需要Docker"></a>为什么需要Docker</h3><p>在软件开发中, 经常遇到一个问题: “明明在我机器上能跑, 为什么到你那里就不行了?” </p>
+<p>原因很简单 — 每个人的机器环境不同: 操作系统不同、软件版本不同、依赖库不同、配置文件不同。传统做法是手动配置环境, 容易出错且不可复现。</p>
+<p>Docker 解决的就是这个问题: <strong>把应用和它所依赖的一切(代码、运行时、系统工具、系统库、配置)打包在一起, 形成一个标准化的、可移植的单元。</strong></p>
+<blockquote>
+<p>Docker 是一个开源的容器化平台, 让你可以将应用程序及其所有依赖打包到一个轻量级、可移植的容器中, 然后在任何支持Docker的环境中运行。</p>
+</blockquote>
+<h3 id="容器-vs-虚拟机"><a href="#容器-vs-虚拟机" class="headerlink" title="容器 vs 虚拟机"></a>容器 vs 虚拟机</h3><p>理解容器最好的方式是把它和虚拟机(VM)对比:</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>虚拟机</th>
+<th>Docker容器</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>虚拟化层次</strong></td>
+<td>硬件层</td>
+<td>操作系统层</td>
+</tr>
+<tr>
+<td><strong>启动速度</strong></td>
+<td>分钟级</td>
+<td>秒级</td>
+</tr>
+<tr>
+<td><strong>资源占用</strong></td>
+<td>每个VM有完整OS, 几GB</td>
+<td>共享宿主机内核, 几十MB</td>
+</tr>
+<tr>
+<td><strong>隔离性</strong></td>
+<td>完全隔离</td>
+<td>进程级隔离</td>
+</tr>
+<tr>
+<td><strong>镜像大小</strong></td>
+<td>通常几GB</td>
+<td>通常几十到几百MB</td>
+</tr>
+</tbody></table>
+<p>简单来说: <strong>虚拟机虚拟的是硬件, 容器虚拟的是操作系统。</strong> Docker容器共享宿主机的操作系统内核, 所以轻量得多。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">传统部署:          虚拟机:              容器(Docker):</span><br><span class="line">┌─────────┐      ┌─────────┐          ┌─────────┐</span><br><span class="line">│   App   │      │   App   │          │   App   │</span><br><span class="line">├─────────┤      ├─────────┤          ├─────────┤</span><br><span class="line">│ 依赖/配置 │      │  Bins/Libs│          │ 依赖/配置 │</span><br><span class="line">├─────────┤      ├─────────┤          ├─────────┤</span><br><span class="line">│   OS    │      │ Guest OS│          │Container│</span><br><span class="line">├─────────┤      ├─────────┤          │ Engine  │</span><br><span class="line">│ Server  │      │Hypervisor│         ├─────────┤</span><br><span class="line">│         │      ├─────────┤          │   OS    │</span><br><span class="line">│         │      │   OS    │          ├─────────┤</span><br><span class="line">│         │      ├─────────┤          │ Server  │</span><br><span class="line">│         │      │ Server  │          │         │</span><br><span class="line">└─────────┘      └─────────┘          └─────────┘</span><br></pre></td></tr></table></figure>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2026/05/24/Docker%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://krythix.github.io/2026/04/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%8E%9F%E7%90%86-%E4%BA%92%E6%96%A5%E5%90%8C%E6%AD%A5%E9%80%9A%E4%BF%A1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avater.jpg">
+      <meta itemprop="name" content="Krythix">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Krythix的小站">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content=" | Krythix的小站">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2026/04/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%8E%9F%E7%90%86-%E4%BA%92%E6%96%A5%E5%90%8C%E6%AD%A5%E9%80%9A%E4%BF%A1/" class="post-title-link" itemprop="url">操作系统原理-互斥同步通信</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2026-04-02 20:56:10" itemprop="dateCreated datePublished" datetime="2026-04-02T20:56:10+08:00">2026-04-02</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2026-04-07 22:42:46" itemprop="dateModified" datetime="2026-04-07T22:42:46+08:00">2026-04-07</time>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>2k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>4 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="进程互斥"><a href="#进程互斥" class="headerlink" title="进程互斥"></a>进程互斥</h1><blockquote>
+<p>多个进程访问变量时，因实际交叉次序不同而导致结果不同，叫做竞争条件</p>
+</blockquote>
+<h2 id="共享变量和临界区"><a href="#共享变量和临界区" class="headerlink" title="共享变量和临界区"></a>共享变量和临界区</h2><ul>
+<li>共享变量：多个进程访问的变量</li>
+<li>临界区：访问共享变量的程序段</li>
+</ul>
+<h2 id="进程互斥-1"><a href="#进程互斥-1" class="headerlink" title="进程互斥"></a>进程互斥</h2><p>多个进程进入关于同一组共享变量的临界区可能发生时间相关的错误，叫做进程互斥</p>
+<h3 id="进程互斥原则"><a href="#进程互斥原则" class="headerlink" title="进程互斥原则"></a>进程互斥原则</h3><ol>
+<li>互斥性</li>
+<li>进展性</li>
+<li>有限等待性（不严格）：公平性</li>
+</ol>
+<h3 id="软件实现"><a href="#软件实现" class="headerlink" title="软件实现"></a>软件实现</h3><ol>
+<li><p>dekker算法</p>
+<p><img src="/home/krythix/.config/Typora/typora-user-images/image-20260402211837447.png" alt="image-20260402211837447"><img src="/home/krythix/.config/Typora/typora-user-images/image-20260402211853948.png" alt="image-20260402211853948"></p>
+</li>
+<li><p>peterson算法</p>
+<p>flag表示请求资源，turn表示轮到的进程</p>
+<p><img src="/home/krythix/.config/Typora/typora-user-images/image-20260402211945277.png" alt="image-20260402211945277"></p>
+</li>
+<li><p>lamport面包店算法</p>
+<p><img src="/home/krythix/.config/Typora/typora-user-images/image-20260402212010416.png" alt="image-20260402212010416"></p>
+<p><img src="/home/krythix/.config/Typora/typora-user-images/image-20260402212022614.png" alt="image-20260402212022614"></p>
+</li>
+<li><p>Eisenberg-Mcguire算法</p>
+<p><img src="/home/krythix/.config/Typora/typora-user-images/image-20260402212059967.png" alt="image-20260402212059967"></p>
+</li>
+</ol>
+<h3 id="硬件实现"><a href="#硬件实现" class="headerlink" title="硬件实现"></a>硬件实现</h3><h2 id="进程同步"><a href="#进程同步" class="headerlink" title="进程同步"></a>进程同步</h2><h3 id="条件变量"><a href="#条件变量" class="headerlink" title="条件变量"></a>条件变量</h3><h4 id="接口"><a href="#接口" class="headerlink" title="接口"></a>接口</h4><ol>
+<li><code>wait(Lock)</code>: 释放lock并等待, 唤醒后重新加锁</li>
+<li><code>signal</code>: 唤醒一个等待者</li>
+<li><code>broadcast</code>: 唤醒所有等待者</li>
+</ol>
+<h4 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h4><p><img src="/2025/06/17/c-%E5%A4%9A%E7%BA%BF%E7%A8%8B/-%E4%BA%92%E6%96%A5%E5%90%8C%E6%AD%A5%E9%80%9A%E4%BF%A1/image-20260407162425854.png" alt="image-20260407162425854"></p>
+<h4 id="实例-生产者消费者模型"><a href="#实例-生产者消费者模型" class="headerlink" title="实例: 生产者消费者模型"></a>实例: 生产者消费者模型</h4><p><img src="/2025/06/17/c-%E5%A4%9A%E7%BA%BF%E7%A8%8B/-%E4%BA%92%E6%96%A5%E5%90%8C%E6%AD%A5%E9%80%9A%E4%BF%A1/image-20260407162544312.png" alt="image-20260407162544312"></p>
+<h3 id="信号量-Semaphore"><a href="#信号量-Semaphore" class="headerlink" title="信号量(Semaphore)"></a>信号量(Semaphore)</h3><h4 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h4><p><img src="/2025/06/17/c-%E5%A4%9A%E7%BA%BF%E7%A8%8B/-%E4%BA%92%E6%96%A5%E5%90%8C%E6%AD%A5%E9%80%9A%E4%BF%A1/image-20260407162938805.png" alt="image-20260407162938805"></p>
+<p><img src="/2025/06/17/c-%E5%A4%9A%E7%BA%BF%E7%A8%8B/-%E4%BA%92%E6%96%A5%E5%90%8C%E6%AD%A5%E9%80%9A%E4%BF%A1/image-20260407162802151.png" alt="image-20260407162802151"></p>
+<ul>
+<li>P: 当value&lt;&#x3D;0时挂起(先减一)</li>
+<li>V: 当value&lt;0时唤醒一个(先加一)</li>
+</ul>
+<p>在实现时要保证pv操作的原子性</p>
+<h4 id="特例"><a href="#特例" class="headerlink" title="特例"></a>特例</h4><p>把value初始化为1可以实现进程互斥, p加锁, v解锁(第一个之后调用p的进程挂起并进入队列)</p>
+<p>初始为非一正整数可以管理同种组合资源</p>
+<h4 id="实例"><a href="#实例" class="headerlink" title="实例"></a>实例</h4><h5 id="生产者消费者问题"><a href="#生产者消费者问题" class="headerlink" title="生产者消费者问题"></a>生产者消费者问题</h5><p><img src="/2025/06/17/c-%E5%A4%9A%E7%BA%BF%E7%A8%8B/-%E4%BA%92%E6%96%A5%E5%90%8C%E6%AD%A5%E9%80%9A%E4%BF%A1/image-20260407215311118.png" alt="image-20260407215311118"></p>
+<p><img src="/2025/06/17/c-%E5%A4%9A%E7%BA%BF%E7%A8%8B/-%E4%BA%92%E6%96%A5%E5%90%8C%E6%AD%A5%E9%80%9A%E4%BF%A1/image-20260407215319461.png" alt="image-20260407215319461"></p>
+<ul>
+<li>S1表示buffer中的空位数量</li>
+<li>S2表示buffer中的物品数量</li>
+</ul>
+<h5 id="读写问题"><a href="#读写问题" class="headerlink" title="读写问题"></a>读写问题</h5><p><img src="/2025/06/17/c-%E5%A4%9A%E7%BA%BF%E7%A8%8B/-%E4%BA%92%E6%96%A5%E5%90%8C%E6%AD%A5%E9%80%9A%E4%BF%A1/image-20260407215809637.png" alt="image-20260407215809637"></p>
+<p>readCount全程&gt;&#x3D;0</p>
+<p>把信号量用作互斥锁</p>
+<p>第一个读者申请锁, 后面的读者直接读</p>
+<p>写者都需要申请锁</p>
+<h3 id="管程"><a href="#管程" class="headerlink" title="管程"></a>管程</h3><p>封装共享变量, 并提供操作共享变量的方法(保证互斥, 只有一个进程可以调用). 管程是一种保证互斥, 实现同步的抽象结构</p>
+<h4 id="实例-生产者消费者"><a href="#实例-生产者消费者" class="headerlink" title="实例: 生产者消费者"></a>实例: 生产者消费者</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;pthread.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> BUF_SIZE 5</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 管程数据</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    <span class="type">int</span> buffer[BUF_SIZE];</span><br><span class="line">    <span class="type">int</span> in, out, count;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 互斥锁 → 实现管程的「自动互斥」</span></span><br><span class="line">    <span class="type">pthread_mutex_t</span> mutex;</span><br><span class="line">    <span class="comment">// 条件变量 → 实现同步</span></span><br><span class="line">    <span class="type">pthread_cond_t</span> notFull;</span><br><span class="line">    <span class="type">pthread_cond_t</span> notEmpty;</span><br><span class="line">&#125; ProducerConsumer;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 初始化</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">init</span><span class="params">(ProducerConsumer *pc)</span> &#123;</span><br><span class="line">    pc-&gt;in = pc-&gt;out = pc-&gt;count = <span class="number">0</span>;</span><br><span class="line">    pthread_mutex_init(&amp;pc-&gt;mutex, <span class="literal">NULL</span>);</span><br><span class="line">    pthread_cond_init(&amp;pc-&gt;notFull, <span class="literal">NULL</span>);</span><br><span class="line">    pthread_cond_init(&amp;pc-&gt;notEmpty, <span class="literal">NULL</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 插入（生产者）</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">insert</span><span class="params">(ProducerConsumer *pc, <span class="type">int</span> item)</span> &#123;</span><br><span class="line">    <span class="comment">// 加锁 → 对应伪代码的 monitor 互斥</span></span><br><span class="line">    pthread_mutex_lock(&amp;pc-&gt;mutex);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 等待条件</span></span><br><span class="line">    <span class="keyword">while</span> (pc-&gt;count == BUF_SIZE) &#123;</span><br><span class="line">        pthread_cond_wait(&amp;pc-&gt;notFull, &amp;pc-&gt;mutex);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 操作数据</span></span><br><span class="line">    pc-&gt;buffer[pc-&gt;in] = item;</span><br><span class="line">    pc-&gt;in = (pc-&gt;in + <span class="number">1</span>) % BUF_SIZE;</span><br><span class="line">    pc-&gt;count++;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 唤醒</span></span><br><span class="line">    pthread_cond_signal(&amp;pc-&gt;notEmpty);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 解锁</span></span><br><span class="line">    pthread_mutex_unlock(&amp;pc-&gt;mutex);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 取出（消费者）</span></span><br><span class="line"><span class="type">int</span> <span class="title function_">remove_item</span><span class="params">(ProducerConsumer *pc)</span> &#123;</span><br><span class="line">    pthread_mutex_lock(&amp;pc-&gt;mutex);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (pc-&gt;count == <span class="number">0</span>) &#123;</span><br><span class="line">        pthread_cond_wait(&amp;pc-&gt;notEmpty, &amp;pc-&gt;mutex);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="type">int</span> item = pc-&gt;buffer[pc-&gt;out];</span><br><span class="line">    pc-&gt;out = (pc-&gt;out + <span class="number">1</span>) % BUF_SIZE;</span><br><span class="line">    pc-&gt;count--;</span><br><span class="line"></span><br><span class="line">    pthread_cond_signal(&amp;pc-&gt;notFull);</span><br><span class="line">    pthread_mutex_unlock(&amp;pc-&gt;mutex);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> item;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -364,7 +658,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2026-04-02 20:54:06" itemprop="dateModified" datetime="2026-04-02T20:54:06+08:00">2026-04-02</time>
+      <time title="修改时间：2026-04-07 16:14:04" itemprop="dateModified" datetime="2026-04-07T16:14:04+08:00">2026-04-07</time>
     </span>
 
   
@@ -550,203 +844,6 @@
 
 
 
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://krythix.github.io/2025/06/17/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avater.jpg">
-      <meta itemprop="name" content="Krythix">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Krythix的小站">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content=" | Krythix的小站">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2025/06/17/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" class="post-title-link" itemprop="url">设计模式-状态模式</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-      
-
-      <time title="创建时间：2025-06-17 19:05:54 / 修改时间：20:41:10" itemprop="dateCreated datePublished" datetime="2025-06-17T19:05:54+08:00">2025-06-17</time>
-    </span>
-
-  
-    <span class="post-meta-break"></span>
-    <span class="post-meta-item" title="本文字数">
-      <span class="post-meta-item-icon">
-        <i class="far fa-file-word"></i>
-      </span>
-      <span class="post-meta-item-text">本文字数：</span>
-      <span>153</span>
-    </span>
-    <span class="post-meta-item" title="阅读时长">
-      <span class="post-meta-item-icon">
-        <i class="far fa-clock"></i>
-      </span>
-      <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>1 分钟</span>
-    </span>
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h2 id="状态模式"><a href="#状态模式" class="headerlink" title="状态模式"></a>状态模式</h2><p><img src="/2025/06/17/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/image-20250617190747435.png" alt="image-20250617190747435"></p>
-<blockquote>
-<p>状态模式: 当一个对象的内在状态改变时允许改变其行为, 这个对象看起来像是改变了其类.</p>
-</blockquote>
-<ul>
-<li>如果没有状态模式, Context类中就要包含状态枚举类, 状态的转换逻辑和每个状态操作的不同都要用if-else或switch语句逐一判断, 所有代码太过集中, 可维护性弱. 违反OC原则, 修改逻辑时要修改而不是添加新代码.</li>
-</ul>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://krythix.github.io/2025/06/15/%E4%BD%BF%E7%94%A8hexo%E6%90%AD%E5%BB%BAgithub%E6%89%98%E7%AE%A1%E7%9A%84%E9%9D%99%E6%80%81%E5%8D%9A%E5%AE%A2%E7%BD%91%E7%AB%99/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avater.jpg">
-      <meta itemprop="name" content="Krythix">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Krythix的小站">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content=" | Krythix的小站">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2025/06/15/%E4%BD%BF%E7%94%A8hexo%E6%90%AD%E5%BB%BAgithub%E6%89%98%E7%AE%A1%E7%9A%84%E9%9D%99%E6%80%81%E5%8D%9A%E5%AE%A2%E7%BD%91%E7%AB%99/" class="post-title-link" itemprop="url">使用hexo搭建github托管的静态网站</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2025-06-15 00:00:00" itemprop="dateCreated datePublished" datetime="2025-06-15T00:00:00+08:00">2025-06-15</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2025-06-16 14:32:57" itemprop="dateModified" datetime="2025-06-16T14:32:57+08:00">2025-06-16</time>
-    </span>
-
-  
-    <span class="post-meta-break"></span>
-    <span class="post-meta-item" title="本文字数">
-      <span class="post-meta-item-icon">
-        <i class="far fa-file-word"></i>
-      </span>
-      <span class="post-meta-item-text">本文字数：</span>
-      <span>3.4k</span>
-    </span>
-    <span class="post-meta-item" title="阅读时长">
-      <span class="post-meta-item-icon">
-        <i class="far fa-clock"></i>
-      </span>
-      <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>6 分钟</span>
-    </span>
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h2 id="一-软件安装"><a href="#一-软件安装" class="headerlink" title="一, 软件安装"></a>一, 软件安装</h2><ol>
-<li><p>git</p>
-</li>
-<li><p>node.js (npm是nodejs的包管理工具)</p>
-</li>
-<li><p>hexo</p>
-<p><code>npm install -g hexo-cli</code></p>
-</li>
-</ol>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2025/06/15/%E4%BD%BF%E7%94%A8hexo%E6%90%AD%E5%BB%BAgithub%E6%89%98%E7%AE%A1%E7%9A%84%E9%9D%99%E6%80%81%E5%8D%9A%E5%AE%A2%E7%BD%91%E7%AB%99/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
   <nav class="pagination">
     <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="/page/2/"><i class="fa fa-angle-right"></i></a>
   </nav>
@@ -770,13 +867,13 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">14k</span>
+    <span title="站点总字数">34k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">26 分钟</span>
+    <span title="站点阅读时长">1:02</span>
   </span>
 </div>
 <div class="busuanzi-count">
