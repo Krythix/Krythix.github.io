@@ -1,6 +1,287 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>c++多线程</title>
+    <url>/2025/06/17/c-%E5%A4%9A%E7%BA%BF%E7%A8%8B/</url>
+    <content><![CDATA[<p>C++11 引入了标准线程库，为 C++ 提供了跨平台的多线程编程能力。本文介绍线程的创建与管理、互斥锁与条件变量等同步机制、promise&#x2F;future 异步任务模型，以及原子操作等核心内容。</p>
+<span id="more"></span>
+
+<h2 id="一-线程"><a href="#一-线程" class="headerlink" title="一, 线程"></a>一, 线程</h2><p>头文件: <code>&lt;thread&gt;</code></p>
+<p>线程类: <code>thread::thread(F&amp;&amp; f, Args&amp;&amp;... args)</code></p>
+<ol>
+<li>创建线程并开始线程:</li>
+</ol>
+  <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	<span class="type">int</span> a, b, result;</span><br><span class="line">	<span class="comment">// ref 生成reference_wrapper对象, 可以转换为T&amp;类型</span></span><br><span class="line">	<span class="function">thread <span class="title">t1</span><span class="params">(func1, a, b, ref(result))</span></span>;</span><br><span class="line">	<span class="function">classA a</span></span><br><span class="line"><span class="function">	thread <span class="title">t2</span><span class="params">(classA::func, &amp;a, a, b)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li><p>阻塞等待线程结束:</p>
+<p>必须所有线程结束后才能退出main函数&#x2F;结束程序</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function">thread <span class="title">t1</span><span class="params">(func1, a, b)</span></span>;</span><br><span class="line"><span class="keyword">if</span>(t<span class="number">1.</span><span class="built_in">joinable</span>())</span><br><span class="line">	t<span class="number">1.</span><span class="built_in">join</span>();</span><br></pre></td></tr></table></figure>
+<p> 不可joinable的线程:</p>
+<ul>
+<li>thread()</li>
+<li>join完成</li>
+<li>detach后的</li>
+<li>被移动的</li>
+</ul>
+</li>
+</ol>
+<h2 id="二-promise和future"><a href="#二-promise和future" class="headerlink" title="二, promise和future"></a>二, promise和future</h2><p>完成单次的异步请求和响应</p>
+<p>promise用来发送数据, future从promise中获得用来接受数据.</p>
+<p>一个promise对应一个future</p>
+<ol>
+<li><p>promise</p>
+<ul>
+<li><code>template&lt;typename Res&gt; class promise;</code></li>
+<li><code>template&lt;typename Res&gt; class promise&lt;Res&amp;&gt;; </code> 两个线程传引用</li>
+<li><code>template&lt;&gt; class promise&lt;void&gt;;</code> 表示完成信号(set_value设置完成状态)</li>
+<li><code>get_future()</code> 返回一个future对象</li>
+<li><code>set_value</code> 设置值, 并把状态设置为就绪</li>
+<li><code>set_exception</code> 设置异常, 就绪</li>
+</ul>
+</li>
+<li><p>future</p>
+<ul>
+<li><code>get</code> 阻塞线程, 就绪时读取值</li>
+<li><code>wait</code> 等待就绪</li>
+<li><code>wait_for</code> 等待时长</li>
+<li><code>wait_until</code> 等到指定时刻</li>
+<li><code>share</code></li>
+</ul>
+<p>future的拷贝函数被删除, 只能移动或引用</p>
+</li>
+</ol>
+<h3 id="传递数值"><a href="#传递数值" class="headerlink" title="传递数值:"></a>传递数值:</h3><figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">cal</span><span class="params">(<span class="type">int</span> x, promise&lt;<span class="type">int</span>&gt;&amp; pro)</span> </span>&#123;</span><br><span class="line">    <span class="type">int</span> a=<span class="number">0</span>, b=<span class="number">1</span> ,c=<span class="number">1</span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>; i&lt;x; i++) &#123;</span><br><span class="line">        a = b;</span><br><span class="line">        b = c;</span><br><span class="line">        c = a+b;</span><br><span class="line">    &#125;</span><br><span class="line">    pro.<span class="built_in">set_value</span>(a);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">display</span><span class="params">(future&lt;<span class="type">int</span>&gt;&amp; fu)</span> </span>&#123;</span><br><span class="line">    cout &lt;&lt; fu.<span class="built_in">get</span>() &lt;&lt; endl;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="type">int</span> n;</span><br><span class="line">    cin &gt;&gt; n;</span><br><span class="line">    promise&lt;<span class="type">int</span>&gt; pro;</span><br><span class="line">    future&lt;<span class="type">int</span>&gt; fu = pro.<span class="built_in">get_future</span>();</span><br><span class="line">    <span class="function">thread <span class="title">t1</span><span class="params">(cal, n, ref(pro))</span></span>;</span><br><span class="line">    <span class="function">thread <span class="title">t2</span><span class="params">(display, ref(fu))</span></span>;</span><br><span class="line">    t<span class="number">1.</span><span class="built_in">join</span>();t<span class="number">2.</span><span class="built_in">join</span>();</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>改进: </p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">cal</span><span class="params">(<span class="type">int</span> x, promise&lt;<span class="type">int</span>&gt;&amp;&amp; pro)</span></span>;</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">display</span><span class="params">(future&lt;<span class="type">int</span>&gt;&amp;&amp; fu)</span></span>;</span><br><span class="line"><span class="function">thread <span class="title">t1</span><span class="params">(cal, n, std::move(pro))</span></span>;</span><br><span class="line"><span class="function">thread <span class="title">t2</span><span class="params">(display, std::move(fu))</span></span>;</span><br></pre></td></tr></table></figure>
+
+<h3 id="传递异常"><a href="#传递异常" class="headerlink" title="传递异常:"></a>传递异常:</h3><p>在promise设置的异常(设置状态)会在future阻塞处重新抛出</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">func</span><span class="params">(<span class="type">int</span> i, promise&lt;<span class="type">int</span>&gt;&amp;&amp; pro)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="keyword">if</span>(i==<span class="number">-1</span>)</span><br><span class="line">            <span class="keyword">throw</span> <span class="built_in">runtime_error</span>(<span class="string">&quot;test error.&quot;</span>);</span><br><span class="line">        <span class="keyword">else</span> </span><br><span class="line">            pro.<span class="built_in">set_value</span>(<span class="number">0</span>);</span><br><span class="line">    &#125; <span class="built_in">catch</span>(...) &#123;</span><br><span class="line">        pro.<span class="built_in">set_exception</span>(<span class="built_in">current_exception</span>());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">display</span><span class="params">(future&lt;<span class="type">int</span>&gt;&amp;&amp; fu)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        cout &lt;&lt; fu.<span class="built_in">get</span>() &lt;&lt; endl;</span><br><span class="line">    &#125; <span class="built_in">catch</span>(runtime_error &amp;e) &#123;</span><br><span class="line">        cout &lt;&lt; <span class="string">&quot;error occurred: &quot;</span> &lt;&lt; e.<span class="built_in">what</span>() &lt;&lt; endl;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="type">int</span> n;</span><br><span class="line">    cin &gt;&gt; n;</span><br><span class="line">    promise&lt;<span class="type">int</span>&gt; pro;</span><br><span class="line">    <span class="keyword">auto</span> fu = pro.<span class="built_in">get_future</span>();</span><br><span class="line">    <span class="function">thread <span class="title">t1</span><span class="params">(func, n, move(pro))</span></span>;</span><br><span class="line">    <span class="function">thread <span class="title">t2</span><span class="params">(display, move(fu))</span></span>;</span><br><span class="line">    t<span class="number">1.</span><span class="built_in">join</span>();t<span class="number">2.</span><span class="built_in">join</span>();</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="多个线程同时读取数据shared-future"><a href="#多个线程同时读取数据shared-future" class="headerlink" title="多个线程同时读取数据shared_future"></a>多个线程同时读取数据shared_future</h3><figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function">shared_future&lt;<span class="type">double</span>&gt; <span class="title">sf</span><span class="params">(promise.get_future())</span></span>;</span><br><span class="line"><span class="comment">// or</span></span><br><span class="line">shared_future = future.<span class="built_in">share</span>(); <span class="comment">// 原future不再可用</span></span><br></pre></td></tr></table></figure>
+
+<p>shared_future以拷贝形式传给线程函数, 被多次读取.</p>
+<p>future只能读取一次, 以移动或引用的方式使用.</p>
+<h2 id="三-互斥和锁"><a href="#三-互斥和锁" class="headerlink" title="三, 互斥和锁"></a>三, 互斥和锁</h2><h3 id="std-mutex"><a href="#std-mutex" class="headerlink" title="std::mutex"></a>std::mutex</h3><p>防止两个线程同时访问数据(非原子), 导致数据有错误.</p>
+<ul>
+<li><code>lock</code> 阻塞, 并锁定</li>
+<li><code>try_lock</code> 不阻塞, 不能锁定时返回false, 成功锁定并返回true</li>
+<li><code>unlock</code></li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">mutex mu;</span><br><span class="line">mu.<span class="built_in">lock</span>();</span><br><span class="line"><span class="comment">// 访问资源</span></span><br><span class="line">mu.<span class="built_in">unlock</span>();</span><br></pre></td></tr></table></figure>
+
+<h3 id="lock-guard"><a href="#lock-guard" class="headerlink" title="lock_guard"></a>lock_guard</h3><p>使用RAII管理一个锁, 方便管理, 异常安全</p>
+<p>是一个模板, 接受一个可加锁的类型</p>
+<p><code>lock_guard</code>对象在构造时加锁, 析构时解锁</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="built_in">lock_guard</span>(mutex);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="unique-lock"><a href="#unique-lock" class="headerlink" title="unique_lock"></a>unique_lock</h3><p>比lock_guard更方便, 可以自己加锁解锁的锁</p>
+<ul>
+<li><code>unique_lock(mutex, std::defer_lock)</code>延迟加锁(.lock), 解锁(.unlock)</li>
+</ul>
+<h3 id="timed-mutex"><a href="#timed-mutex" class="headerlink" title="timed_mutex"></a>timed_mutex</h3><ul>
+<li>.<code>lock</code></li>
+<li><code>.try_lock</code></li>
+<li><code>.try_lock_for</code>  阻塞一定时间并返回ture&#x2F;false</li>
+<li><code>.try_lock_until</code></li>
+<li><code>.unlock</code></li>
+</ul>
+<h3 id="死锁和解决办法"><a href="#死锁和解决办法" class="headerlink" title="死锁和解决办法"></a>死锁和解决办法</h3><p>产生原因: </p>
+<ol>
+<li><p>在一个线程后连续锁定一个mutex两次</p>
+</li>
+<li><pre><code class="language-c++">//thread1:
+mutex1.lock();
+mutex2.lock();
+//thread2:
+mutex2.lock();
+mutex1.lock();
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">   解决: 同顺序加锁</span><br><span class="line"></span><br><span class="line">3. 未解锁</span><br><span class="line"></span><br><span class="line">#### 解决方法:</span><br><span class="line"></span><br><span class="line">1. `std::lock()`函数</span><br><span class="line"></span><br><span class="line">   使用一定算法, 使不同线程用lock加锁不会产生死锁</span><br><span class="line"></span><br><span class="line">   ```c++</span><br><span class="line">   std:lock(mtx1, mtx2);	// 用一定算法加锁</span><br><span class="line">   std::lock_guard lock1(mtx1, std::adopt_lock);	//adopt_lock表示接管一个己经加锁的锁, 不在构造函数中加锁</span><br><span class="line">   std::lock_guard lock2(mtx2, std::adopt_lock);</span><br></pre></td></tr></table></figure>
+</code></pre>
+</li>
+<li><p><code>std::scoped_lock</code>类</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function">std::scoped_lock <span class="title">lock</span><span class="params">(mtx1, mtx2)</span></span>;</span><br></pre></td></tr></table></figure></li>
+</ol>
+<h2 id="四-读写锁-共享锁"><a href="#四-读写锁-共享锁" class="headerlink" title="四, 读写锁(共享锁)"></a>四, 读写锁(共享锁)</h2><p>用普通锁读取, 写资源: </p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">ResOpe</span>&#123;</span><br><span class="line">    <span class="type">int</span> value;</span><br><span class="line">    mutex mtx;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">ResOpe</span>() : <span class="built_in">value</span>(<span class="number">0</span>) &#123;&#125;</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">write</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>; i&lt;<span class="number">100</span>; i++) &#123;</span><br><span class="line">            mtx.<span class="built_in">lock</span>();</span><br><span class="line">            this_thread::<span class="built_in">sleep_for</span>(chrono::<span class="built_in">milliseconds</span>(<span class="number">600</span>));</span><br><span class="line">            value++;</span><br><span class="line">            cout &lt;&lt; <span class="string">&quot;[write] &quot;</span> &lt;&lt; value &lt;&lt; endl;</span><br><span class="line">            mtx.<span class="built_in">unlock</span>();</span><br><span class="line">            this_thread::<span class="built_in">sleep_for</span>(chrono::<span class="built_in">milliseconds</span>(<span class="number">1</span>));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">read</span><span class="params">(<span class="type">int</span> id)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>; i&lt;<span class="number">100</span>; i++) &#123;</span><br><span class="line">            mtx.<span class="built_in">lock</span>();</span><br><span class="line">            this_thread::<span class="built_in">sleep_for</span>(chrono::<span class="built_in">milliseconds</span>(<span class="number">300</span>));</span><br><span class="line">            cout &lt;&lt; <span class="string">&quot;[read&quot;</span> &lt;&lt; id &lt;&lt; <span class="string">&quot;] &quot;</span> &lt;&lt; value &lt;&lt; endl;</span><br><span class="line">            mtx.<span class="built_in">unlock</span>();</span><br><span class="line">            this_thread::<span class="built_in">sleep_for</span>(chrono::<span class="built_in">milliseconds</span>(<span class="number">1</span>));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    ResOpe ro;</span><br><span class="line">    <span class="function">thread <span class="title">tw</span><span class="params">(&amp;ResOpe::write, &amp;ro)</span></span>;</span><br><span class="line">    <span class="function">thread <span class="title">tr1</span><span class="params">(&amp;ResOpe::read, &amp;ro, <span class="number">1</span>)</span></span>;</span><br><span class="line">    <span class="function">thread <span class="title">tr2</span><span class="params">(&amp;ResOpe::read, &amp;ro, <span class="number">2</span>)</span></span>;</span><br><span class="line">    <span class="function">thread <span class="title">tr3</span><span class="params">(&amp;ResOpe::read, &amp;ro, <span class="number">3</span>)</span></span>;</span><br><span class="line">    tw.<span class="built_in">join</span>();</span><br><span class="line">    tr<span class="number">1.</span><span class="built_in">join</span>();</span><br><span class="line">    tr<span class="number">2.</span><span class="built_in">join</span>();</span><br><span class="line">    tr<span class="number">3.</span><span class="built_in">join</span>();</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>读时间比写时间短, 在写时, 读线程就都已经开始申请加锁, 写线程解锁后, 每个读线程<strong>依次</strong>读取, 效率低</p>
+<p>想要让读线程可以同时读取数据</p>
+<h3 id="读写锁和互斥量shared-mutex"><a href="#读写锁和互斥量shared-mutex" class="headerlink" title="读写锁和互斥量shared_mutex"></a>读写锁和互斥量shared_mutex</h3><p>两种模式:</p>
+<ul>
+<li>独占模式(写): 同一时间只有一个线程可获得锁<ul>
+<li><code>.lock()</code></li>
+<li><code>.try_lock()</code></li>
+<li><code>.unlock()</code></li>
+<li>RAII使用锁: <code>unique_lock</code>和<code>lock_guard</code></li>
+</ul>
+</li>
+<li>共享模式(读): 多个线程可共享这个锁<ul>
+<li><code>.lock_shared</code></li>
+<li><code>.try_lock_shared</code></li>
+<li><code>.unlock_shared</code></li>
+<li>RAII使用锁: <code>shared_lock</code></li>
+</ul>
+</li>
+</ul>
+<p>有了写锁, 其他所有锁都不能再加, 有了读锁, 只能继续加读锁 (在没有写锁申请时).</p>
+<p>当一个线程持有读锁时，其他线程可以继续加读锁，但如果有线程正在等待写锁，后续读锁的申请会被阻塞, 防止写线程一直无法加锁</p>
+<p>改进的读写代码: </p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">ResOpe</span>&#123;</span><br><span class="line">    <span class="type">int</span> value;</span><br><span class="line">    mutex cout_mtx;</span><br><span class="line">    shared_mutex smtx;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">ResOpe</span>() : <span class="built_in">value</span>(<span class="number">0</span>) &#123;&#125;</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">write</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>; i&lt;<span class="number">100</span>; i++) &#123;</span><br><span class="line">            smtx.<span class="built_in">lock</span>();</span><br><span class="line">            this_thread::<span class="built_in">sleep_for</span>(chrono::<span class="built_in">milliseconds</span>(<span class="number">600</span>));</span><br><span class="line">            value++;</span><br><span class="line">            cout_mtx.<span class="built_in">lock</span>();</span><br><span class="line">            cout &lt;&lt; <span class="string">&quot;[write] &quot;</span> &lt;&lt; value &lt;&lt; endl;</span><br><span class="line">            cout_mtx.<span class="built_in">unlock</span>();</span><br><span class="line">            smtx.<span class="built_in">unlock</span>();</span><br><span class="line">            this_thread::<span class="built_in">sleep_for</span>(chrono::<span class="built_in">milliseconds</span>(<span class="number">1</span>));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">read</span><span class="params">(<span class="type">int</span> id)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>; i&lt;<span class="number">100</span>; i++) &#123;</span><br><span class="line">            smtx.<span class="built_in">lock_shared</span>();</span><br><span class="line">            this_thread::<span class="built_in">sleep_for</span>(chrono::<span class="built_in">milliseconds</span>(<span class="number">300</span>));</span><br><span class="line">            cout_mtx.<span class="built_in">lock</span>();</span><br><span class="line">            cout &lt;&lt; <span class="string">&quot;[read&quot;</span> &lt;&lt; id &lt;&lt; <span class="string">&quot;] &quot;</span> &lt;&lt; value &lt;&lt; endl;</span><br><span class="line">            cout_mtx.<span class="built_in">unlock</span>();</span><br><span class="line">            smtx.<span class="built_in">unlock_shared</span>();</span><br><span class="line">            this_thread::<span class="built_in">sleep_for</span>(chrono::<span class="built_in">milliseconds</span>(<span class="number">1</span>));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>其他读写锁:</p>
+<ul>
+<li>shared_timed_mutex</li>
+</ul>
+<h2 id="五-条件变量condition-variable"><a href="#五-条件变量condition-variable" class="headerlink" title="五, 条件变量condition_variable"></a>五, 条件变量condition_variable</h2><p>使用condition_variable需要以下内容:</p>
+<ol>
+<li>condition_variable</li>
+<li>mutex</li>
+<li>unique_lock</li>
+<li>数据</li>
+</ol>
+<h3 id="notify-one"><a href="#notify-one" class="headerlink" title=".notify_one()"></a>.notify_one()</h3><p>一个线程调用notify_one后, 一个wait的线程就会继续执行</p>
+<h3 id="wait"><a href="#wait" class="headerlink" title=".wait"></a>.wait</h3><h4 id="基础用法和问题"><a href="#基础用法和问题" class="headerlink" title="基础用法和问题"></a>基础用法和问题</h4><p><code>void wait(std::unique_lock&lt;std::mutex&gt;&amp; lock);</code></p>
+<p>只传一个unique_lock为参数时, 执行下面步骤</p>
+<ol>
+<li>给lock解锁</li>
+<li>阻塞等待其他线程调用.notify</li>
+<li>给lock加锁</li>
+</ol>
+<p>但是可能有<strong>丢失唤醒</strong>, <strong>虚假唤醒</strong></p>
+<p>丢失唤醒: 在开始wait之前就有线程发送了唤醒</p>
+<p>虚假唤醒: 因为操作系统, 可能有错误的唤醒信号</p>
+<h4 id="改进的使用方法"><a href="#改进的使用方法" class="headerlink" title="改进的使用方法"></a>改进的使用方法</h4><p><code>template &lt;class Predicate&gt; void wait(std::unique_lock&lt;std::mutex&gt;&amp; lock, Predicate pred);</code></p>
+<p>相当于(简易版):</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">while</span> (!<span class="built_in">pred</span>()) &#123;</span><br><span class="line">    <span class="built_in">wait</span>(lock);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>丢失唤醒时, 因为pred已经被设置, 不会进入循环</p>
+<p>虚假唤醒时, 因为pred没有被写线程设置, 所以还会继续while循环</p>
+<h3 id="示例代码"><a href="#示例代码" class="headerlink" title="示例代码"></a>示例代码</h3><figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;condition_variable&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sstream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;thread&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;mutex&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Channel</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">getData</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">auto</span> id = this_thread::<span class="built_in">get_id</span>();</span><br><span class="line">        <span class="function">unique_lock <span class="title">lck</span><span class="params">(mtx)</span></span>;</span><br><span class="line">        cout &lt;&lt; id &lt;&lt; <span class="string">&quot; waiting.&quot;</span> &lt;&lt; endl;</span><br><span class="line">        cv.<span class="built_in">wait</span>(lck, [<span class="keyword">this</span>]()&#123;<span class="keyword">return</span> !sharedData.<span class="built_in">empty</span>();&#125;);</span><br><span class="line">        cout &lt;&lt; id &lt;&lt; <span class="string">&quot; get data: &quot;</span> &lt;&lt; sharedData &lt;&lt; endl;</span><br><span class="line">        sharedData.<span class="built_in">clear</span>();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">setData</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="type">static</span> <span class="type">int</span> id = <span class="number">1</span>;</span><br><span class="line">        <span class="comment">// auto id = this_thread::get_id();</span></span><br><span class="line">        stringstream ss;</span><br><span class="line">        <span class="comment">// this_thread::sleep_for(chrono::milliseconds(100));</span></span><br><span class="line">        ss &lt;&lt; <span class="string">&quot;Hello #&quot;</span> &lt;&lt; id;</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="function">lock_guard <span class="title">lck</span><span class="params">(mtx)</span></span>;</span><br><span class="line">            sharedData = ss.<span class="built_in">str</span>();</span><br><span class="line">            cout &lt;&lt; id &lt;&lt; <span class="string">&quot; send data.&quot;</span> &lt;&lt; endl;</span><br><span class="line">            id++;</span><br><span class="line">        &#125;</span><br><span class="line">        cv.<span class="built_in">notify_one</span>();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    mutex mtx;</span><br><span class="line">    condition_variable cv;</span><br><span class="line">    string sharedData;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    Channel c;</span><br><span class="line">    <span class="function">thread <span class="title">t1</span><span class="params">(&amp;Channel::getData, &amp;c)</span></span>;</span><br><span class="line">    <span class="function">thread <span class="title">t2</span><span class="params">(&amp;Channel::setData, &amp;c)</span></span>;</span><br><span class="line">    t<span class="number">1.</span><span class="built_in">join</span>();</span><br><span class="line">    t<span class="number">2.</span><span class="built_in">join</span>();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="一些注意事项"><a href="#一些注意事项" class="headerlink" title="一些注意事项"></a>一些注意事项</h3><h4 id="1-互斥锁的作用"><a href="#1-互斥锁的作用" class="headerlink" title="(1) 互斥锁的作用"></a>(1) 互斥锁的作用</h4><p>如果发生这个情况: </p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">while</span> (!<span class="built_in">pred</span>()) &#123;</span><br><span class="line">    <span class="comment">// &lt;---此时写线程设置pred并发送notify</span></span><br><span class="line">    <span class="built_in">wait</span>(lock);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>线程会一直wait吗?</p>
+<p>不会, 因为有互斥锁.</p>
+<p>如果写线程在写数据, 那么锁在写线程中, 读线程不可能执行到判断pred的语句</p>
+<p>如果读线程加了锁, 此时写线程在阻塞中</p>
+<h4 id="2-一些顺序"><a href="#2-一些顺序" class="headerlink" title="(2) 一些顺序"></a>(2) 一些顺序</h4><ol>
+<li>wait 之前应该用unique_lock加锁</li>
+<li>写线程中先设置数据和pred(pred可以通过数据推导), 再发送notify</li>
+</ol>
+]]></content>
+      <tags>
+        <tag>c++</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>使用hexo搭建github托管的静态网站</title>
+    <url>/2025/06/15/%E4%BD%BF%E7%94%A8hexo%E6%90%AD%E5%BB%BAgithub%E6%89%98%E7%AE%A1%E7%9A%84%E9%9D%99%E6%80%81%E5%8D%9A%E5%AE%A2%E7%BD%91%E7%AB%99/</url>
+    <content><![CDATA[<p>本文详细介绍如何使用 Hexo 框架搭建基于 GitHub Pages 托管的静态博客网站，涵盖环境安装、站点初始化、NexT 主题配置、文章写作和自动化部署的全流程。</p>
+<span id="more"></span>
+
+<h2 id="一-软件安装"><a href="#一-软件安装" class="headerlink" title="一, 软件安装"></a>一, 软件安装</h2><ol>
+<li><p>git</p>
+</li>
+<li><p>node.js (npm是nodejs的包管理工具)</p>
+</li>
+<li><p>hexo</p>
+<p><code>npm install -g hexo-cli</code></p>
+</li>
+</ol>
+<h2 id="二-初始化"><a href="#二-初始化" class="headerlink" title="二, 初始化"></a>二, 初始化</h2><p><code>hexo init blog</code>会自动创建一个blog文件夹</p>
+<p><code>npm install</code>会安装好站点</p>
+<p><code>hexo g</code>构建好网站的结构, 保存在global文件夹里, 每次修改都应该运行这个指令</p>
+<p><code>hexo s</code>在本地模拟运行服务器, 可在浏览器查看效果</p>
+<p><img src="/2025/06/15/%E4%BD%BF%E7%94%A8hexo%E6%90%AD%E5%BB%BAgithub%E6%89%98%E7%AE%A1%E7%9A%84%E9%9D%99%E6%80%81%E5%8D%9A%E5%AE%A2%E7%BD%91%E7%AB%99/image-20250615220640729.png" alt="image-20250615220640729"></p>
+<p>文件夹结构: </p>
+<ol>
+<li>node_modules: 站点使用的插件</li>
+<li>public: 缓存, 生成的站点的根目录就在public</li>
+<li>source: 写的文章, 图片, 图标等资源应该在这里</li>
+<li>source&#x2F;_post: 文章目录</li>
+<li>themes: 主题文件夹</li>
+<li>_config.yml: hexo的主配置文件, 用来配置站点标题, 部署方法等基本信息</li>
+<li>_config.<theme_name>.yml: 主题的配置文件</li>
+<li>package.json: 安装的插件&#x2F;主题的信息</li>
+</ol>
+<h2 id="三-安装NexT主题"><a href="#三-安装NexT主题" class="headerlink" title="三, 安装NexT主题"></a>三, 安装NexT主题</h2><ol>
+<li><p><code>git clone https://github.com/next-theme/hexo-theme-next themes/next</code>把主题下载下来. </p>
+</li>
+<li><p>把next主题文件夹放在theme文件夹里. </p>
+</li>
+<li><p>修改_config.yml的配置:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">theme: next</span><br></pre></td></tr></table></figure>
+
+<p><strong>这里的next是theme文件夹里的主题文件夹的名字</strong></p>
+</li>
+</ol>
+<h2 id="四-基本配置"><a href="#四-基本配置" class="headerlink" title="四, 基本配置"></a>四, 基本配置</h2><h3 id="blog-config-yml"><a href="#blog-config-yml" class="headerlink" title="blog&#x2F;_config.yml"></a>blog&#x2F;_config.yml</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># Site</span><br><span class="line">title: # 站点的名字, 显示在标签页上</span><br><span class="line">subtitle: 这是subtitle</span><br><span class="line">description: &#x27;&#x27;</span><br><span class="line">author: # 作者名字</span><br><span class="line">language: zh-CN</span><br><span class="line">timezone: Asia/Shanghai</span><br><span class="line"># URL</span><br><span class="line">url: https://&#123;name&#125;.github.io</span><br><span class="line"># Writing</span><br><span class="line">post_asset_folder: true # 在使用hexo new创建文章时, 会新建一个放照片的目录</span><br></pre></td></tr></table></figure>
+
+<h3 id="blog-config-next-yml"><a href="#blog-config-next-yml" class="headerlink" title="blog&#x2F;_config.next.yml"></a>blog&#x2F;_config.next.yml</h3><h4 id="主题"><a href="#主题" class="headerlink" title="主题"></a>主题</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># Schemes</span><br><span class="line">scheme: Muse</span><br><span class="line">#scheme: Mist</span><br><span class="line">#scheme: Pisces</span><br><span class="line">#scheme: Gemini</span><br></pre></td></tr></table></figure>
+<h4 id="图标"><a href="#图标" class="headerlink" title="图标"></a>图标</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 站点的图标, 以source文件夹为根目录</span><br><span class="line">favicon:</span><br><span class="line">  small: /images/favicon.png</span><br><span class="line">  medium: /images/favicon.png</span><br><span class="line">  apple_touch_icon: /images/favicon.png</span><br><span class="line">  safari_pinned_tab: /images/favicon.png</span><br><span class="line">  #android_manifest: /manifest.json</span><br></pre></td></tr></table></figure>
+<h4 id="菜单"><a href="#菜单" class="headerlink" title="菜单"></a>菜单</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">menu:</span><br><span class="line">  home: / || fa fa-home</span><br><span class="line">  about: /about/ || fa fa-user</span><br><span class="line">  tags: /tags/ || fa fa-tags</span><br><span class="line">  categories: /categories/ || fa fa-th</span><br><span class="line">  archives: /archives/ || fa fa-archive</span><br><span class="line">  #schedule: /schedule/ || fa fa-calendar</span><br><span class="line">  #sitemap: /sitemap.xml || fa fa-sitemap</span><br><span class="line">  #commonweal: /404/ || fa fa-heartbeat</span><br></pre></td></tr></table></figure>
+<p>要创建菜单项的文件夹, 使用命令<code>hexo new page &#123;menu_name&#125;</code></p>
+<p>就在source下创建了对应菜单的文件夹</p>
+<p>还要手动修改菜单的信息: </p>
+<p>例如tags菜单, 还需要修改source&#x2F;tags&#x2F;index.html(主要修改type项):</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">---</span><br><span class="line">title: TAGS</span><br><span class="line">date: 2023-01-01</span><br><span class="line">type: &quot;tags&quot;</span><br><span class="line">comments: false</span><br><span class="line">---</span><br></pre></td></tr></table></figure>
+<h4 id="头像"><a href="#头像" class="headerlink" title="头像"></a>头像</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">avatar:</span><br><span class="line">  url: /images/avater.jpg</span><br></pre></td></tr></table></figure>
+
+<h4 id="社交账号"><a href="#社交账号" class="headerlink" title="社交账号"></a>社交账号</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">social:</span><br><span class="line">  GitHub: https://github.com/&#123;name&#125; || fab fa-github</span><br></pre></td></tr></table></figure>
+
+<h2 id="五-部署到github"><a href="#五-部署到github" class="headerlink" title="五, 部署到github"></a>五, 部署到github</h2><h3 id="创建github仓库"><a href="#创建github仓库" class="headerlink" title="创建github仓库"></a>创建github仓库</h3><p>仓库名字: {username}.github.io</p>
+<h3 id="配置好git"><a href="#配置好git" class="headerlink" title="配置好git"></a>配置好git</h3><p><code>git config --global user.name &quot;name&quot;</code></p>
+<p><code>git config --global user.email &quot;name&quot;</code></p>
+<p><code>ssh-keygen -t rsa -C &quot;&#123;email&#125;&quot;</code></p>
+<p>添加ssh公钥到github账号</p>
+<h3 id="在hexo中安装部署到github的插件"><a href="#在hexo中安装部署到github的插件" class="headerlink" title="在hexo中安装部署到github的插件"></a>在hexo中安装部署到github的插件</h3><p><code>npm install hexo-deployer-git --save</code></p>
+<ul>
+<li><p>包会被安装在blog&#x2F;node-modules下</p>
+</li>
+<li><p>–save表示把包的信息记录在package.json中</p>
+</li>
+</ul>
+<h3 id="config-yml配置使用github部署"><a href="#config-yml配置使用github部署" class="headerlink" title="_config.yml配置使用github部署"></a>_config.yml配置使用github部署</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">deploy:</span><br><span class="line">  type: git</span><br><span class="line">  repo: 你的仓库路径</span><br><span class="line">  branch: main</span><br></pre></td></tr></table></figure>
+
+<h3 id="推送博客站点到github"><a href="#推送博客站点到github" class="headerlink" title="推送博客站点到github"></a>推送博客站点到github</h3><p><code>hexo d</code></p>
+<h3 id="访问博客"><a href="#访问博客" class="headerlink" title="访问博客"></a>访问博客</h3><p><code>https://&#123;name&#125;.github.io</code></p>
+<h2 id="六-添加文章"><a href="#六-添加文章" class="headerlink" title="六, 添加文章"></a>六, 添加文章</h2><p><code>hexo new &#123;passagename&#125;</code></p>
+<p>只需编辑source&#x2F;_post&#x2F;里的md文件</p>
+<h2 id="七-插件"><a href="#七-插件" class="headerlink" title="七, 插件"></a>七, 插件</h2><h3 id="local-search"><a href="#local-search" class="headerlink" title="local search"></a>local search</h3><p><code>npm install hexo-generator-searchdb --save</code></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">search:</span><br><span class="line">  path: search.xml</span><br><span class="line">  field: post</span><br><span class="line">  format: html</span><br><span class="line">  limit: 10000</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># Local search</span><br><span class="line">local_search:</span><br><span class="line">  enable: true</span><br></pre></td></tr></table></figure>
+
+<h2 id="八-一些问题"><a href="#八-一些问题" class="headerlink" title="八, 一些问题"></a>八, 一些问题</h2><h3 id="部署后图片路径不对"><a href="#部署后图片路径不对" class="headerlink" title="部署后图片路径不对"></a>部署后图片路径不对</h3><p>_post目录是这样的结构: </p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">_post:</span><br><span class="line">	artical.md</span><br><span class="line">	artical</span><br><span class="line">		image1.jpg</span><br><span class="line">		image2.jpg</span><br></pre></td></tr></table></figure>
+
+<p>hexo部署后生成的文件夹(public&#x2F;2025&#x2F;6&#x2F;14&#x2F;artical)结构: </p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">artical</span><br><span class="line">	index.html</span><br><span class="line">	image1.jpg</span><br><span class="line">	image2.jpg</span><br></pre></td></tr></table></figure>
+
+<p>index.html中图片的路径是: </p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">/./artical/image1.jpg(多了一个artical)</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>解决方法: 让hexo生成index.html时, 在artical后加一个..&#x2F;</p>
+</blockquote>
+<ol>
+<li><p>修改_config.yml</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">marked:</span><br><span class="line">  prependRoot: true</span><br><span class="line">  postAsset: true</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>修改文件blog\node_modules\hexo-renderer-marked\lib\renderer.js:</p>
+</li>
+</ol>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> (!<span class="regexp">/^(#|\/\/|http(s)?:)/</span>.<span class="title function_">test</span>(href) &amp;&amp; !relative_link &amp;&amp; prependRoot) &#123;</span><br><span class="line">  <span class="keyword">if</span> (!href.<span class="title function_">startsWith</span>(<span class="string">&#x27;/&#x27;</span>) &amp;&amp; !href.<span class="title function_">startsWith</span>(<span class="string">&#x27;\\&#x27;</span>) &amp;&amp; postPath) &#123;</span><br><span class="line">    <span class="keyword">const</span> <span class="title class_">PostAsset</span> = hexo.<span class="title function_">model</span>(<span class="string">&#x27;PostAsset&#x27;</span>);</span><br><span class="line">    <span class="comment">// findById requires forward slash</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// ==================================改动:</span></span><br><span class="line">    <span class="keyword">const</span> fixPostPath = <span class="title function_">join</span>(postPath, <span class="string">&#x27;../&#x27;</span>);</span><br><span class="line">    <span class="keyword">const</span> asset = <span class="title class_">PostAsset</span>.<span class="title function_">findById</span>(<span class="title function_">join</span>(fixPostPath, href.<span class="title function_">replace</span>(<span class="regexp">/\\/g</span>, <span class="string">&#x27;/&#x27;</span>)));</span><br><span class="line">    <span class="comment">//const asset = PostAsset.findById(join(postPath, href.replace(/\\/g, &#x27;/&#x27;)));</span></span><br><span class="line">    <span class="comment">// ====================================;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// asset.path is backward slash in Windows</span></span><br><span class="line">    <span class="keyword">if</span> (asset) href = asset.<span class="property">path</span>.<span class="title function_">replace</span>(<span class="regexp">/\\/g</span>, <span class="string">&#x27;/&#x27;</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  href = url_for.<span class="title function_">call</span>(hexo, href);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <tags>
+        <tag>网站</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Docker使用教程</title>
     <url>/2026/05/24/Docker%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/</url>
     <content><![CDATA[<p>Docker 是当今最流行的容器化平台，无论是开发、测试还是生产部署，它都能让你摆脱”在我机器上能跑”的困境。本教程从零开始，覆盖 Docker 的核心概念、镜像与容器的全部常用操作、Dockerfile 编写、数据与网络管理、Docker Compose 多容器编排，以及三个完整的实战案例。读完这篇文章，你将能够独立使用 Docker 管理应用。</p>
@@ -596,536 +877,6 @@
       </categories>
       <tags>
         <tag>Docker</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>动态规划</title>
-    <url>/2026/03/31/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/</url>
-    <content><![CDATA[<p>动态规划是一种通过将问题分解为重叠子问题来求解最优化问题的算法设计方法。本文以双调欧几里德旅行商问题为例，详细讲解动态规划的状态定义、状态转移方程的推导以及最优子结构的证明。</p>
-<span id="more"></span>
-
-<h1 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h1><h2 id="双调欧几里德旅行商问题"><a href="#双调欧几里德旅行商问题" class="headerlink" title="双调欧几里德旅行商问题"></a>双调欧几里德旅行商问题</h2><p><img src="/2026/03/31/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/Screenshot_2026-03-31-16-21-04-335_com.orion.note.png" alt="Screenshot_2026-03-31-16-21-04-335_com.orion.note"></p>
-<p>原问题是NP-hard问题， 简化后可以用动态规划求新问题的最优解。</p>
-<p>把n个点按x坐标进行排序， 选择若干点为路径环上方的点，其余作为路径环下方的点，连接。问题的最优解一定是其中的某一种选择方法，选择过程类似01背包。</p>
-<h3 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h3><ul>
-<li><p>从前n个点中进行选择，分为上下两部分，f[i, j]表示上半部分以i结束，下半部分以j结束时已经选择的两部分曲线的长度和，且上下两部分要选择所有前n个点。因为i，j的选择是对称的，只考虑i &gt; j</p>
-</li>
-<li><p>状态转移方程</p>
-<ol>
-<li><p>i &#x3D; j+1:  <code>f[i, j] = max( f[j, k] + dist(k, i) )</code>   (1&lt;&#x3D;k&lt;j)</p>
-<p>i为j后的第一个点，所以i的前一个点不能由j推导来，应该由1～j-1中的点推导而来。</p>
-<p>由于k&lt;j, 且问题有对称性，将f[k, j]改为f[j, k]</p>
-</li>
-<li><p>i &gt; j+1: <code>f[i, j] = f[i-1, j] + dist[i, i-1]</code></p>
-<p>因为必须把前n个点都选择完， 所以[j+1, i-1]之间的点都必须在i对应的路径上，i的前一个点只能是i-1</p>
-</li>
-</ol>
-</li>
-<li><p>结果：除两端， 每个点都连接两个其他点，且这两个点的x坐标分局此点的两侧，所以第n-1个点一定与第n个点相连。所以<code>result=dp[n][n-1] + dist(n, n-1)</code></p>
-</li>
-</ul>
-<h3 id="证明"><a href="#证明" class="headerlink" title="证明"></a>证明</h3><ol>
-<li>最优子结构</li>
-<li>状态转移完备且正确</li>
-<li>无后效性</li>
-</ol>
-<h3 id="实现代码"><a href="#实现代码" class="headerlink" title="实现代码"></a>实现代码</h3><figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;climits&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;algorithm&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;cmath&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> n;</span><br><span class="line">vector&lt;pair&lt;<span class="type">int</span>, <span class="type">int</span>&gt;&gt; <span class="built_in">v</span>(<span class="number">1</span>);</span><br><span class="line">vector&lt;vector&lt;<span class="type">double</span>&gt; &gt; dp;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">double</span> <span class="title">dist</span><span class="params">(<span class="type">int</span> a, <span class="type">int</span> b)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">sqrt</span>(<span class="built_in">pow</span>(v[a].first - v[b].first, <span class="number">2</span>) + <span class="built_in">pow</span>(v[a].second - v[b].second, <span class="number">2</span>));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    cin &gt;&gt; n;</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">1</span>; i&lt;=n; i++) &#123;</span><br><span class="line">        <span class="type">int</span> x, y;</span><br><span class="line">        cin &gt;&gt; x &gt;&gt; y;</span><br><span class="line">        v.<span class="built_in">push_back</span>(&#123;x, y&#125;);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>; i&lt;=n; i++) &#123;</span><br><span class="line">        dp.<span class="built_in">emplace_back</span>(n<span class="number">+1</span>, <span class="number">1e15</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">sort</span>(v.<span class="built_in">begin</span>()<span class="number">+1</span>, v.<span class="built_in">end</span>());</span><br><span class="line"></span><br><span class="line">    dp[<span class="number">1</span>][<span class="number">1</span>] = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">1</span>; i&lt;=n; i++) &#123;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> j=<span class="number">1</span>; j&lt;i; j++) &#123;</span><br><span class="line">            <span class="keyword">if</span>(i &gt; j<span class="number">+1</span>) &#123;</span><br><span class="line">                dp[i][j] = dp[i<span class="number">-1</span>][j] + <span class="built_in">dist</span>(i, i<span class="number">-1</span>);</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> (i == j<span class="number">+1</span>) &#123;</span><br><span class="line">                <span class="keyword">for</span>(<span class="type">int</span> k=<span class="number">1</span>; k&lt;j; k++) &#123;</span><br><span class="line">                    dp[i][j] = <span class="built_in">min</span>(dp[i][j], dp[j][k] + <span class="built_in">dist</span>(k, i));</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="type">double</span> result = dp[n][n<span class="number">-1</span>] + <span class="built_in">dist</span>(n, n<span class="number">-1</span>);</span><br><span class="line">    cout &lt;&lt; result;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="整齐打印"><a href="#整齐打印" class="headerlink" title="整齐打印"></a>整齐打印</h2><p><img src="/media/krythix/Shared/blog/source/_posts/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/Screenshot_2026-04-02-14-13-29-231_com.orion.note.png" alt="Screenshot_2026-04-02-14-13-29-231_com.orion.note"></p>
-<h3 id="解决方案-1"><a href="#解决方案-1" class="headerlink" title="解决方案"></a>解决方案</h3><p>对每个单词处都可以选择换行或者继续加在上一行后（前提可以放下），共2^n种选择。</p>
-<ul>
-<li><p>状态转移方程：f(i) 表示前i个单词已经排好且以第i个单词为一行的结尾</p>
-<p>cost(k+1, i)表示把k+1到i当作一行的代价</p>
-<p><code>f(i) = min(f(k) + cost(k+1, i))</code>，(k&lt;i)</p>
-<p>不考虑最后一行的代价：最后一行一定以最后一个单词结尾，因此令cost(x, n)&#x3D;0</p>
-</li>
-</ul>
-<h3 id="证明-1"><a href="#证明-1" class="headerlink" title="证明"></a>证明</h3><ol>
-<li><p>最优子结构</p>
-<p>设f(i)为一个最优解，而他的子问题f(k)不是最优解，用最优解替换后有比f(i)更优的解</p>
-</li>
-<li><p>无后效性</p>
-</li>
-<li><p>完备且正确</p>
-<p>每个单词处可以选择和他同一行的单词有几个，可以列举所有情况。</p>
-</li>
-</ol>
-<h3 id="实现代码-1"><a href="#实现代码-1" class="headerlink" title="实现代码"></a>实现代码</h3><figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;climits&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;cmath&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line">vector&lt;string&gt; strs;</span><br><span class="line"><span class="keyword">constexpr</span> <span class="type">int</span> N = <span class="number">1e3</span>;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> dp[N];</span><br><span class="line"><span class="type">int</span> cost[N][N];</span><br><span class="line"><span class="type">int</span> arr[N];</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	<span class="type">int</span> n, m;</span><br><span class="line">	cin &gt;&gt; n &gt;&gt; m;</span><br><span class="line">	<span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">1</span>; i &lt;= n; i++) &#123;</span><br><span class="line">		string s;</span><br><span class="line">		cin &gt;&gt; s;</span><br><span class="line">		arr[i] = arr[i - <span class="number">1</span>] + s.<span class="built_in">size</span>();</span><br><span class="line">		strs.<span class="built_in">emplace_back</span>(<span class="built_in">move</span>(s));</span><br><span class="line">		dp[i] = INT_MAX / <span class="number">2</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">1</span>; i &lt;= n; i++) &#123;</span><br><span class="line">		<span class="keyword">for</span> (<span class="type">int</span> j = <span class="number">1</span>; j &lt;= i; j++) &#123;</span><br><span class="line">			<span class="keyword">if</span> (i == n)</span><br><span class="line">				cost[j][i] = <span class="number">0</span>;</span><br><span class="line">			<span class="keyword">else</span> &#123;</span><br><span class="line">				<span class="type">int</span> temp = m - arr[i] - arr[j - <span class="number">1</span>] + i - j;</span><br><span class="line">				<span class="keyword">if</span> (temp &gt;= <span class="number">0</span>)</span><br><span class="line">					cost[j][i] = <span class="built_in">pow</span>(temp, <span class="number">3</span>);</span><br><span class="line">				<span class="keyword">else</span></span><br><span class="line">					cost[j][i] = INT_MAX / <span class="number">2</span>;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">1</span>; i &lt;= n; i++) &#123;</span><br><span class="line">		<span class="keyword">for</span> (<span class="type">int</span> k = i; k &gt;= <span class="number">1</span>; k--) &#123;</span><br><span class="line">			dp[i] = <span class="built_in">min</span>(dp[i], dp[k<span class="number">-1</span>] + cost[k][i]);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	cout &lt;&lt; dp[n] &lt;&lt; endl;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-]]></content>
-  </entry>
-  <entry>
-    <title>c++多线程</title>
-    <url>/2025/06/17/c-%E5%A4%9A%E7%BA%BF%E7%A8%8B/</url>
-    <content><![CDATA[<p>C++11 引入了标准线程库，为 C++ 提供了跨平台的多线程编程能力。本文介绍线程的创建与管理、互斥锁与条件变量等同步机制、promise&#x2F;future 异步任务模型，以及原子操作等核心内容。</p>
-<span id="more"></span>
-
-<h2 id="一-线程"><a href="#一-线程" class="headerlink" title="一, 线程"></a>一, 线程</h2><p>头文件: <code>&lt;thread&gt;</code></p>
-<p>线程类: <code>thread::thread(F&amp;&amp; f, Args&amp;&amp;... args)</code></p>
-<ol>
-<li>创建线程并开始线程:</li>
-</ol>
-  <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	<span class="type">int</span> a, b, result;</span><br><span class="line">	<span class="comment">// ref 生成reference_wrapper对象, 可以转换为T&amp;类型</span></span><br><span class="line">	<span class="function">thread <span class="title">t1</span><span class="params">(func1, a, b, ref(result))</span></span>;</span><br><span class="line">	<span class="function">classA a</span></span><br><span class="line"><span class="function">	thread <span class="title">t2</span><span class="params">(classA::func, &amp;a, a, b)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<ol start="2">
-<li><p>阻塞等待线程结束:</p>
-<p>必须所有线程结束后才能退出main函数&#x2F;结束程序</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function">thread <span class="title">t1</span><span class="params">(func1, a, b)</span></span>;</span><br><span class="line"><span class="keyword">if</span>(t<span class="number">1.</span><span class="built_in">joinable</span>())</span><br><span class="line">	t<span class="number">1.</span><span class="built_in">join</span>();</span><br></pre></td></tr></table></figure>
-<p> 不可joinable的线程:</p>
-<ul>
-<li>thread()</li>
-<li>join完成</li>
-<li>detach后的</li>
-<li>被移动的</li>
-</ul>
-</li>
-</ol>
-<h2 id="二-promise和future"><a href="#二-promise和future" class="headerlink" title="二, promise和future"></a>二, promise和future</h2><p>完成单次的异步请求和响应</p>
-<p>promise用来发送数据, future从promise中获得用来接受数据.</p>
-<p>一个promise对应一个future</p>
-<ol>
-<li><p>promise</p>
-<ul>
-<li><code>template&lt;typename Res&gt; class promise;</code></li>
-<li><code>template&lt;typename Res&gt; class promise&lt;Res&amp;&gt;; </code> 两个线程传引用</li>
-<li><code>template&lt;&gt; class promise&lt;void&gt;;</code> 表示完成信号(set_value设置完成状态)</li>
-<li><code>get_future()</code> 返回一个future对象</li>
-<li><code>set_value</code> 设置值, 并把状态设置为就绪</li>
-<li><code>set_exception</code> 设置异常, 就绪</li>
-</ul>
-</li>
-<li><p>future</p>
-<ul>
-<li><code>get</code> 阻塞线程, 就绪时读取值</li>
-<li><code>wait</code> 等待就绪</li>
-<li><code>wait_for</code> 等待时长</li>
-<li><code>wait_until</code> 等到指定时刻</li>
-<li><code>share</code></li>
-</ul>
-<p>future的拷贝函数被删除, 只能移动或引用</p>
-</li>
-</ol>
-<h3 id="传递数值"><a href="#传递数值" class="headerlink" title="传递数值:"></a>传递数值:</h3><figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">cal</span><span class="params">(<span class="type">int</span> x, promise&lt;<span class="type">int</span>&gt;&amp; pro)</span> </span>&#123;</span><br><span class="line">    <span class="type">int</span> a=<span class="number">0</span>, b=<span class="number">1</span> ,c=<span class="number">1</span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>; i&lt;x; i++) &#123;</span><br><span class="line">        a = b;</span><br><span class="line">        b = c;</span><br><span class="line">        c = a+b;</span><br><span class="line">    &#125;</span><br><span class="line">    pro.<span class="built_in">set_value</span>(a);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">display</span><span class="params">(future&lt;<span class="type">int</span>&gt;&amp; fu)</span> </span>&#123;</span><br><span class="line">    cout &lt;&lt; fu.<span class="built_in">get</span>() &lt;&lt; endl;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="type">int</span> n;</span><br><span class="line">    cin &gt;&gt; n;</span><br><span class="line">    promise&lt;<span class="type">int</span>&gt; pro;</span><br><span class="line">    future&lt;<span class="type">int</span>&gt; fu = pro.<span class="built_in">get_future</span>();</span><br><span class="line">    <span class="function">thread <span class="title">t1</span><span class="params">(cal, n, ref(pro))</span></span>;</span><br><span class="line">    <span class="function">thread <span class="title">t2</span><span class="params">(display, ref(fu))</span></span>;</span><br><span class="line">    t<span class="number">1.</span><span class="built_in">join</span>();t<span class="number">2.</span><span class="built_in">join</span>();</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>改进: </p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">cal</span><span class="params">(<span class="type">int</span> x, promise&lt;<span class="type">int</span>&gt;&amp;&amp; pro)</span></span>;</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">display</span><span class="params">(future&lt;<span class="type">int</span>&gt;&amp;&amp; fu)</span></span>;</span><br><span class="line"><span class="function">thread <span class="title">t1</span><span class="params">(cal, n, std::move(pro))</span></span>;</span><br><span class="line"><span class="function">thread <span class="title">t2</span><span class="params">(display, std::move(fu))</span></span>;</span><br></pre></td></tr></table></figure>
-
-<h3 id="传递异常"><a href="#传递异常" class="headerlink" title="传递异常:"></a>传递异常:</h3><p>在promise设置的异常(设置状态)会在future阻塞处重新抛出</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">func</span><span class="params">(<span class="type">int</span> i, promise&lt;<span class="type">int</span>&gt;&amp;&amp; pro)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="keyword">if</span>(i==<span class="number">-1</span>)</span><br><span class="line">            <span class="keyword">throw</span> <span class="built_in">runtime_error</span>(<span class="string">&quot;test error.&quot;</span>);</span><br><span class="line">        <span class="keyword">else</span> </span><br><span class="line">            pro.<span class="built_in">set_value</span>(<span class="number">0</span>);</span><br><span class="line">    &#125; <span class="built_in">catch</span>(...) &#123;</span><br><span class="line">        pro.<span class="built_in">set_exception</span>(<span class="built_in">current_exception</span>());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">display</span><span class="params">(future&lt;<span class="type">int</span>&gt;&amp;&amp; fu)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        cout &lt;&lt; fu.<span class="built_in">get</span>() &lt;&lt; endl;</span><br><span class="line">    &#125; <span class="built_in">catch</span>(runtime_error &amp;e) &#123;</span><br><span class="line">        cout &lt;&lt; <span class="string">&quot;error occurred: &quot;</span> &lt;&lt; e.<span class="built_in">what</span>() &lt;&lt; endl;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="type">int</span> n;</span><br><span class="line">    cin &gt;&gt; n;</span><br><span class="line">    promise&lt;<span class="type">int</span>&gt; pro;</span><br><span class="line">    <span class="keyword">auto</span> fu = pro.<span class="built_in">get_future</span>();</span><br><span class="line">    <span class="function">thread <span class="title">t1</span><span class="params">(func, n, move(pro))</span></span>;</span><br><span class="line">    <span class="function">thread <span class="title">t2</span><span class="params">(display, move(fu))</span></span>;</span><br><span class="line">    t<span class="number">1.</span><span class="built_in">join</span>();t<span class="number">2.</span><span class="built_in">join</span>();</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="多个线程同时读取数据shared-future"><a href="#多个线程同时读取数据shared-future" class="headerlink" title="多个线程同时读取数据shared_future"></a>多个线程同时读取数据shared_future</h3><figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function">shared_future&lt;<span class="type">double</span>&gt; <span class="title">sf</span><span class="params">(promise.get_future())</span></span>;</span><br><span class="line"><span class="comment">// or</span></span><br><span class="line">shared_future = future.<span class="built_in">share</span>(); <span class="comment">// 原future不再可用</span></span><br></pre></td></tr></table></figure>
-
-<p>shared_future以拷贝形式传给线程函数, 被多次读取.</p>
-<p>future只能读取一次, 以移动或引用的方式使用.</p>
-<h2 id="三-互斥和锁"><a href="#三-互斥和锁" class="headerlink" title="三, 互斥和锁"></a>三, 互斥和锁</h2><h3 id="std-mutex"><a href="#std-mutex" class="headerlink" title="std::mutex"></a>std::mutex</h3><p>防止两个线程同时访问数据(非原子), 导致数据有错误.</p>
-<ul>
-<li><code>lock</code> 阻塞, 并锁定</li>
-<li><code>try_lock</code> 不阻塞, 不能锁定时返回false, 成功锁定并返回true</li>
-<li><code>unlock</code></li>
-</ul>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">mutex mu;</span><br><span class="line">mu.<span class="built_in">lock</span>();</span><br><span class="line"><span class="comment">// 访问资源</span></span><br><span class="line">mu.<span class="built_in">unlock</span>();</span><br></pre></td></tr></table></figure>
-
-<h3 id="lock-guard"><a href="#lock-guard" class="headerlink" title="lock_guard"></a>lock_guard</h3><p>使用RAII管理一个锁, 方便管理, 异常安全</p>
-<p>是一个模板, 接受一个可加锁的类型</p>
-<p><code>lock_guard</code>对象在构造时加锁, 析构时解锁</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="built_in">lock_guard</span>(mutex);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="unique-lock"><a href="#unique-lock" class="headerlink" title="unique_lock"></a>unique_lock</h3><p>比lock_guard更方便, 可以自己加锁解锁的锁</p>
-<ul>
-<li><code>unique_lock(mutex, std::defer_lock)</code>延迟加锁(.lock), 解锁(.unlock)</li>
-</ul>
-<h3 id="timed-mutex"><a href="#timed-mutex" class="headerlink" title="timed_mutex"></a>timed_mutex</h3><ul>
-<li>.<code>lock</code></li>
-<li><code>.try_lock</code></li>
-<li><code>.try_lock_for</code>  阻塞一定时间并返回ture&#x2F;false</li>
-<li><code>.try_lock_until</code></li>
-<li><code>.unlock</code></li>
-</ul>
-<h3 id="死锁和解决办法"><a href="#死锁和解决办法" class="headerlink" title="死锁和解决办法"></a>死锁和解决办法</h3><p>产生原因: </p>
-<ol>
-<li><p>在一个线程后连续锁定一个mutex两次</p>
-</li>
-<li><pre><code class="language-c++">//thread1:
-mutex1.lock();
-mutex2.lock();
-//thread2:
-mutex2.lock();
-mutex1.lock();
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">   解决: 同顺序加锁</span><br><span class="line"></span><br><span class="line">3. 未解锁</span><br><span class="line"></span><br><span class="line">#### 解决方法:</span><br><span class="line"></span><br><span class="line">1. `std::lock()`函数</span><br><span class="line"></span><br><span class="line">   使用一定算法, 使不同线程用lock加锁不会产生死锁</span><br><span class="line"></span><br><span class="line">   ```c++</span><br><span class="line">   std:lock(mtx1, mtx2);	// 用一定算法加锁</span><br><span class="line">   std::lock_guard lock1(mtx1, std::adopt_lock);	//adopt_lock表示接管一个己经加锁的锁, 不在构造函数中加锁</span><br><span class="line">   std::lock_guard lock2(mtx2, std::adopt_lock);</span><br></pre></td></tr></table></figure>
-</code></pre>
-</li>
-<li><p><code>std::scoped_lock</code>类</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function">std::scoped_lock <span class="title">lock</span><span class="params">(mtx1, mtx2)</span></span>;</span><br></pre></td></tr></table></figure></li>
-</ol>
-<h2 id="四-读写锁-共享锁"><a href="#四-读写锁-共享锁" class="headerlink" title="四, 读写锁(共享锁)"></a>四, 读写锁(共享锁)</h2><p>用普通锁读取, 写资源: </p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">ResOpe</span>&#123;</span><br><span class="line">    <span class="type">int</span> value;</span><br><span class="line">    mutex mtx;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">ResOpe</span>() : <span class="built_in">value</span>(<span class="number">0</span>) &#123;&#125;</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">write</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>; i&lt;<span class="number">100</span>; i++) &#123;</span><br><span class="line">            mtx.<span class="built_in">lock</span>();</span><br><span class="line">            this_thread::<span class="built_in">sleep_for</span>(chrono::<span class="built_in">milliseconds</span>(<span class="number">600</span>));</span><br><span class="line">            value++;</span><br><span class="line">            cout &lt;&lt; <span class="string">&quot;[write] &quot;</span> &lt;&lt; value &lt;&lt; endl;</span><br><span class="line">            mtx.<span class="built_in">unlock</span>();</span><br><span class="line">            this_thread::<span class="built_in">sleep_for</span>(chrono::<span class="built_in">milliseconds</span>(<span class="number">1</span>));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">read</span><span class="params">(<span class="type">int</span> id)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>; i&lt;<span class="number">100</span>; i++) &#123;</span><br><span class="line">            mtx.<span class="built_in">lock</span>();</span><br><span class="line">            this_thread::<span class="built_in">sleep_for</span>(chrono::<span class="built_in">milliseconds</span>(<span class="number">300</span>));</span><br><span class="line">            cout &lt;&lt; <span class="string">&quot;[read&quot;</span> &lt;&lt; id &lt;&lt; <span class="string">&quot;] &quot;</span> &lt;&lt; value &lt;&lt; endl;</span><br><span class="line">            mtx.<span class="built_in">unlock</span>();</span><br><span class="line">            this_thread::<span class="built_in">sleep_for</span>(chrono::<span class="built_in">milliseconds</span>(<span class="number">1</span>));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    ResOpe ro;</span><br><span class="line">    <span class="function">thread <span class="title">tw</span><span class="params">(&amp;ResOpe::write, &amp;ro)</span></span>;</span><br><span class="line">    <span class="function">thread <span class="title">tr1</span><span class="params">(&amp;ResOpe::read, &amp;ro, <span class="number">1</span>)</span></span>;</span><br><span class="line">    <span class="function">thread <span class="title">tr2</span><span class="params">(&amp;ResOpe::read, &amp;ro, <span class="number">2</span>)</span></span>;</span><br><span class="line">    <span class="function">thread <span class="title">tr3</span><span class="params">(&amp;ResOpe::read, &amp;ro, <span class="number">3</span>)</span></span>;</span><br><span class="line">    tw.<span class="built_in">join</span>();</span><br><span class="line">    tr<span class="number">1.</span><span class="built_in">join</span>();</span><br><span class="line">    tr<span class="number">2.</span><span class="built_in">join</span>();</span><br><span class="line">    tr<span class="number">3.</span><span class="built_in">join</span>();</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>读时间比写时间短, 在写时, 读线程就都已经开始申请加锁, 写线程解锁后, 每个读线程<strong>依次</strong>读取, 效率低</p>
-<p>想要让读线程可以同时读取数据</p>
-<h3 id="读写锁和互斥量shared-mutex"><a href="#读写锁和互斥量shared-mutex" class="headerlink" title="读写锁和互斥量shared_mutex"></a>读写锁和互斥量shared_mutex</h3><p>两种模式:</p>
-<ul>
-<li>独占模式(写): 同一时间只有一个线程可获得锁<ul>
-<li><code>.lock()</code></li>
-<li><code>.try_lock()</code></li>
-<li><code>.unlock()</code></li>
-<li>RAII使用锁: <code>unique_lock</code>和<code>lock_guard</code></li>
-</ul>
-</li>
-<li>共享模式(读): 多个线程可共享这个锁<ul>
-<li><code>.lock_shared</code></li>
-<li><code>.try_lock_shared</code></li>
-<li><code>.unlock_shared</code></li>
-<li>RAII使用锁: <code>shared_lock</code></li>
-</ul>
-</li>
-</ul>
-<p>有了写锁, 其他所有锁都不能再加, 有了读锁, 只能继续加读锁 (在没有写锁申请时).</p>
-<p>当一个线程持有读锁时，其他线程可以继续加读锁，但如果有线程正在等待写锁，后续读锁的申请会被阻塞, 防止写线程一直无法加锁</p>
-<p>改进的读写代码: </p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">ResOpe</span>&#123;</span><br><span class="line">    <span class="type">int</span> value;</span><br><span class="line">    mutex cout_mtx;</span><br><span class="line">    shared_mutex smtx;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">ResOpe</span>() : <span class="built_in">value</span>(<span class="number">0</span>) &#123;&#125;</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">write</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>; i&lt;<span class="number">100</span>; i++) &#123;</span><br><span class="line">            smtx.<span class="built_in">lock</span>();</span><br><span class="line">            this_thread::<span class="built_in">sleep_for</span>(chrono::<span class="built_in">milliseconds</span>(<span class="number">600</span>));</span><br><span class="line">            value++;</span><br><span class="line">            cout_mtx.<span class="built_in">lock</span>();</span><br><span class="line">            cout &lt;&lt; <span class="string">&quot;[write] &quot;</span> &lt;&lt; value &lt;&lt; endl;</span><br><span class="line">            cout_mtx.<span class="built_in">unlock</span>();</span><br><span class="line">            smtx.<span class="built_in">unlock</span>();</span><br><span class="line">            this_thread::<span class="built_in">sleep_for</span>(chrono::<span class="built_in">milliseconds</span>(<span class="number">1</span>));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">read</span><span class="params">(<span class="type">int</span> id)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>; i&lt;<span class="number">100</span>; i++) &#123;</span><br><span class="line">            smtx.<span class="built_in">lock_shared</span>();</span><br><span class="line">            this_thread::<span class="built_in">sleep_for</span>(chrono::<span class="built_in">milliseconds</span>(<span class="number">300</span>));</span><br><span class="line">            cout_mtx.<span class="built_in">lock</span>();</span><br><span class="line">            cout &lt;&lt; <span class="string">&quot;[read&quot;</span> &lt;&lt; id &lt;&lt; <span class="string">&quot;] &quot;</span> &lt;&lt; value &lt;&lt; endl;</span><br><span class="line">            cout_mtx.<span class="built_in">unlock</span>();</span><br><span class="line">            smtx.<span class="built_in">unlock_shared</span>();</span><br><span class="line">            this_thread::<span class="built_in">sleep_for</span>(chrono::<span class="built_in">milliseconds</span>(<span class="number">1</span>));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<p>其他读写锁:</p>
-<ul>
-<li>shared_timed_mutex</li>
-</ul>
-<h2 id="五-条件变量condition-variable"><a href="#五-条件变量condition-variable" class="headerlink" title="五, 条件变量condition_variable"></a>五, 条件变量condition_variable</h2><p>使用condition_variable需要以下内容:</p>
-<ol>
-<li>condition_variable</li>
-<li>mutex</li>
-<li>unique_lock</li>
-<li>数据</li>
-</ol>
-<h3 id="notify-one"><a href="#notify-one" class="headerlink" title=".notify_one()"></a>.notify_one()</h3><p>一个线程调用notify_one后, 一个wait的线程就会继续执行</p>
-<h3 id="wait"><a href="#wait" class="headerlink" title=".wait"></a>.wait</h3><h4 id="基础用法和问题"><a href="#基础用法和问题" class="headerlink" title="基础用法和问题"></a>基础用法和问题</h4><p><code>void wait(std::unique_lock&lt;std::mutex&gt;&amp; lock);</code></p>
-<p>只传一个unique_lock为参数时, 执行下面步骤</p>
-<ol>
-<li>给lock解锁</li>
-<li>阻塞等待其他线程调用.notify</li>
-<li>给lock加锁</li>
-</ol>
-<p>但是可能有<strong>丢失唤醒</strong>, <strong>虚假唤醒</strong></p>
-<p>丢失唤醒: 在开始wait之前就有线程发送了唤醒</p>
-<p>虚假唤醒: 因为操作系统, 可能有错误的唤醒信号</p>
-<h4 id="改进的使用方法"><a href="#改进的使用方法" class="headerlink" title="改进的使用方法"></a>改进的使用方法</h4><p><code>template &lt;class Predicate&gt; void wait(std::unique_lock&lt;std::mutex&gt;&amp; lock, Predicate pred);</code></p>
-<p>相当于(简易版):</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">while</span> (!<span class="built_in">pred</span>()) &#123;</span><br><span class="line">    <span class="built_in">wait</span>(lock);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>丢失唤醒时, 因为pred已经被设置, 不会进入循环</p>
-<p>虚假唤醒时, 因为pred没有被写线程设置, 所以还会继续while循环</p>
-<h3 id="示例代码"><a href="#示例代码" class="headerlink" title="示例代码"></a>示例代码</h3><figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;condition_variable&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sstream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;thread&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;mutex&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Channel</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">getData</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">auto</span> id = this_thread::<span class="built_in">get_id</span>();</span><br><span class="line">        <span class="function">unique_lock <span class="title">lck</span><span class="params">(mtx)</span></span>;</span><br><span class="line">        cout &lt;&lt; id &lt;&lt; <span class="string">&quot; waiting.&quot;</span> &lt;&lt; endl;</span><br><span class="line">        cv.<span class="built_in">wait</span>(lck, [<span class="keyword">this</span>]()&#123;<span class="keyword">return</span> !sharedData.<span class="built_in">empty</span>();&#125;);</span><br><span class="line">        cout &lt;&lt; id &lt;&lt; <span class="string">&quot; get data: &quot;</span> &lt;&lt; sharedData &lt;&lt; endl;</span><br><span class="line">        sharedData.<span class="built_in">clear</span>();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">setData</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="type">static</span> <span class="type">int</span> id = <span class="number">1</span>;</span><br><span class="line">        <span class="comment">// auto id = this_thread::get_id();</span></span><br><span class="line">        stringstream ss;</span><br><span class="line">        <span class="comment">// this_thread::sleep_for(chrono::milliseconds(100));</span></span><br><span class="line">        ss &lt;&lt; <span class="string">&quot;Hello #&quot;</span> &lt;&lt; id;</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="function">lock_guard <span class="title">lck</span><span class="params">(mtx)</span></span>;</span><br><span class="line">            sharedData = ss.<span class="built_in">str</span>();</span><br><span class="line">            cout &lt;&lt; id &lt;&lt; <span class="string">&quot; send data.&quot;</span> &lt;&lt; endl;</span><br><span class="line">            id++;</span><br><span class="line">        &#125;</span><br><span class="line">        cv.<span class="built_in">notify_one</span>();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    mutex mtx;</span><br><span class="line">    condition_variable cv;</span><br><span class="line">    string sharedData;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    Channel c;</span><br><span class="line">    <span class="function">thread <span class="title">t1</span><span class="params">(&amp;Channel::getData, &amp;c)</span></span>;</span><br><span class="line">    <span class="function">thread <span class="title">t2</span><span class="params">(&amp;Channel::setData, &amp;c)</span></span>;</span><br><span class="line">    t<span class="number">1.</span><span class="built_in">join</span>();</span><br><span class="line">    t<span class="number">2.</span><span class="built_in">join</span>();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="一些注意事项"><a href="#一些注意事项" class="headerlink" title="一些注意事项"></a>一些注意事项</h3><h4 id="1-互斥锁的作用"><a href="#1-互斥锁的作用" class="headerlink" title="(1) 互斥锁的作用"></a>(1) 互斥锁的作用</h4><p>如果发生这个情况: </p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">while</span> (!<span class="built_in">pred</span>()) &#123;</span><br><span class="line">    <span class="comment">// &lt;---此时写线程设置pred并发送notify</span></span><br><span class="line">    <span class="built_in">wait</span>(lock);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>线程会一直wait吗?</p>
-<p>不会, 因为有互斥锁.</p>
-<p>如果写线程在写数据, 那么锁在写线程中, 读线程不可能执行到判断pred的语句</p>
-<p>如果读线程加了锁, 此时写线程在阻塞中</p>
-<h4 id="2-一些顺序"><a href="#2-一些顺序" class="headerlink" title="(2) 一些顺序"></a>(2) 一些顺序</h4><ol>
-<li>wait 之前应该用unique_lock加锁</li>
-<li>写线程中先设置数据和pred(pred可以通过数据推导), 再发送notify</li>
-</ol>
-]]></content>
-      <tags>
-        <tag>c++</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>操作系统原理-互斥同步通信</title>
-    <url>/2026/04/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%8E%9F%E7%90%86-%E4%BA%92%E6%96%A5%E5%90%8C%E6%AD%A5%E9%80%9A%E4%BF%A1/</url>
-    <content><![CDATA[<p>介绍进程互斥、同步与通信的核心机制，包括软硬件实现互斥的方法、信号量与管程、经典同步问题，以及消息传递等进程间通信方式。</p>
-<span id="more"></span>
-
-<h1 id="进程互斥"><a href="#进程互斥" class="headerlink" title="进程互斥"></a>进程互斥</h1><blockquote>
-<p>多个进程访问变量时，因实际交叉次序不同而导致结果不同，叫做竞争条件</p>
-</blockquote>
-<h2 id="共享变量和临界区"><a href="#共享变量和临界区" class="headerlink" title="共享变量和临界区"></a>共享变量和临界区</h2><ul>
-<li>共享变量：多个进程访问的变量</li>
-<li>临界区：访问共享变量的程序段</li>
-</ul>
-<h2 id="进程互斥-1"><a href="#进程互斥-1" class="headerlink" title="进程互斥"></a>进程互斥</h2><p>多个进程进入关于同一组共享变量的临界区可能发生时间相关的错误，叫做进程互斥</p>
-<h3 id="进程互斥原则"><a href="#进程互斥原则" class="headerlink" title="进程互斥原则"></a>进程互斥原则</h3><ol>
-<li>互斥性</li>
-<li>进展性</li>
-<li>有限等待性（不严格）：公平性</li>
-</ol>
-<h3 id="软件实现"><a href="#软件实现" class="headerlink" title="软件实现"></a>软件实现</h3><ol>
-<li><p>dekker算法</p>
-<p><img src="/home/krythix/.config/Typora/typora-user-images/image-20260402211837447.png" alt="image-20260402211837447"><img src="/home/krythix/.config/Typora/typora-user-images/image-20260402211853948.png" alt="image-20260402211853948"></p>
-</li>
-<li><p>peterson算法</p>
-<p>flag表示请求资源，turn表示轮到的进程</p>
-<p><img src="/home/krythix/.config/Typora/typora-user-images/image-20260402211945277.png" alt="image-20260402211945277"></p>
-</li>
-<li><p>lamport面包店算法</p>
-<p><img src="/home/krythix/.config/Typora/typora-user-images/image-20260402212010416.png" alt="image-20260402212010416"></p>
-<p><img src="/home/krythix/.config/Typora/typora-user-images/image-20260402212022614.png" alt="image-20260402212022614"></p>
-</li>
-<li><p>Eisenberg-Mcguire算法</p>
-<p><img src="/home/krythix/.config/Typora/typora-user-images/image-20260402212059967.png" alt="image-20260402212059967"></p>
-</li>
-</ol>
-<h3 id="硬件实现"><a href="#硬件实现" class="headerlink" title="硬件实现"></a>硬件实现</h3><h2 id="进程同步"><a href="#进程同步" class="headerlink" title="进程同步"></a>进程同步</h2><h3 id="条件变量"><a href="#条件变量" class="headerlink" title="条件变量"></a>条件变量</h3><h4 id="接口"><a href="#接口" class="headerlink" title="接口"></a>接口</h4><ol>
-<li><code>wait(Lock)</code>: 释放lock并等待, 唤醒后重新加锁</li>
-<li><code>signal</code>: 唤醒一个等待者</li>
-<li><code>broadcast</code>: 唤醒所有等待者</li>
-</ol>
-<h4 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h4><p><img src="/2026/04/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%8E%9F%E7%90%86-%E4%BA%92%E6%96%A5%E5%90%8C%E6%AD%A5%E9%80%9A%E4%BF%A1/image-20260407162425854.png" alt="image-20260407162425854"></p>
-<h4 id="实例-生产者消费者模型"><a href="#实例-生产者消费者模型" class="headerlink" title="实例: 生产者消费者模型"></a>实例: 生产者消费者模型</h4><p><img src="/2026/04/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%8E%9F%E7%90%86-%E4%BA%92%E6%96%A5%E5%90%8C%E6%AD%A5%E9%80%9A%E4%BF%A1/image-20260407162544312.png" alt="image-20260407162544312"></p>
-<h3 id="信号量-Semaphore"><a href="#信号量-Semaphore" class="headerlink" title="信号量(Semaphore)"></a>信号量(Semaphore)</h3><h4 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h4><p><img src="/2026/04/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%8E%9F%E7%90%86-%E4%BA%92%E6%96%A5%E5%90%8C%E6%AD%A5%E9%80%9A%E4%BF%A1/image-20260407162938805.png" alt="image-20260407162938805"></p>
-<p><img src="/2026/04/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%8E%9F%E7%90%86-%E4%BA%92%E6%96%A5%E5%90%8C%E6%AD%A5%E9%80%9A%E4%BF%A1/image-20260407162802151.png" alt="image-20260407162802151"></p>
-<ul>
-<li>P: 当value&lt;&#x3D;0时挂起(先减一)</li>
-<li>V: 当value&lt;0时唤醒一个(先加一)</li>
-</ul>
-<p>在实现时要保证pv操作的原子性</p>
-<h4 id="特例"><a href="#特例" class="headerlink" title="特例"></a>特例</h4><p>把value初始化为1可以实现进程互斥, p加锁, v解锁(第一个之后调用p的进程挂起并进入队列)</p>
-<p>初始为非一正整数可以管理同种组合资源</p>
-<h4 id="实例"><a href="#实例" class="headerlink" title="实例"></a>实例</h4><h5 id="生产者消费者问题"><a href="#生产者消费者问题" class="headerlink" title="生产者消费者问题"></a>生产者消费者问题</h5><p><img src="/2026/04/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%8E%9F%E7%90%86-%E4%BA%92%E6%96%A5%E5%90%8C%E6%AD%A5%E9%80%9A%E4%BF%A1/image-20260407215311118.png" alt="image-20260407215311118"></p>
-<p><img src="/2026/04/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%8E%9F%E7%90%86-%E4%BA%92%E6%96%A5%E5%90%8C%E6%AD%A5%E9%80%9A%E4%BF%A1/image-20260407215319461.png" alt="image-20260407215319461"></p>
-<ul>
-<li>S1表示buffer中的空位数量</li>
-<li>S2表示buffer中的物品数量</li>
-</ul>
-<h5 id="读写问题"><a href="#读写问题" class="headerlink" title="读写问题"></a>读写问题</h5><p><img src="/2026/04/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%8E%9F%E7%90%86-%E4%BA%92%E6%96%A5%E5%90%8C%E6%AD%A5%E9%80%9A%E4%BF%A1/image-20260407215809637.png" alt="image-20260407215809637"></p>
-<p>readCount全程&gt;&#x3D;0</p>
-<p>把信号量用作互斥锁</p>
-<p>第一个读者申请锁, 后面的读者直接读</p>
-<p>写者都需要申请锁</p>
-<h3 id="管程"><a href="#管程" class="headerlink" title="管程"></a>管程</h3><p>封装共享变量, 并提供操作共享变量的方法(保证互斥, 只有一个进程可以调用). 管程是一种保证互斥, 实现同步的抽象结构</p>
-<h4 id="实例-生产者消费者"><a href="#实例-生产者消费者" class="headerlink" title="实例: 生产者消费者"></a>实例: 生产者消费者</h4><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;pthread.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> BUF_SIZE 5</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 管程数据</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    <span class="type">int</span> buffer[BUF_SIZE];</span><br><span class="line">    <span class="type">int</span> in, out, count;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 互斥锁 → 实现管程的「自动互斥」</span></span><br><span class="line">    <span class="type">pthread_mutex_t</span> mutex;</span><br><span class="line">    <span class="comment">// 条件变量 → 实现同步</span></span><br><span class="line">    <span class="type">pthread_cond_t</span> notFull;</span><br><span class="line">    <span class="type">pthread_cond_t</span> notEmpty;</span><br><span class="line">&#125; ProducerConsumer;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 初始化</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">init</span><span class="params">(ProducerConsumer *pc)</span> &#123;</span><br><span class="line">    pc-&gt;in = pc-&gt;out = pc-&gt;count = <span class="number">0</span>;</span><br><span class="line">    pthread_mutex_init(&amp;pc-&gt;mutex, <span class="literal">NULL</span>);</span><br><span class="line">    pthread_cond_init(&amp;pc-&gt;notFull, <span class="literal">NULL</span>);</span><br><span class="line">    pthread_cond_init(&amp;pc-&gt;notEmpty, <span class="literal">NULL</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 插入（生产者）</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">insert</span><span class="params">(ProducerConsumer *pc, <span class="type">int</span> item)</span> &#123;</span><br><span class="line">    <span class="comment">// 加锁 → 对应伪代码的 monitor 互斥</span></span><br><span class="line">    pthread_mutex_lock(&amp;pc-&gt;mutex);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 等待条件</span></span><br><span class="line">    <span class="keyword">while</span> (pc-&gt;count == BUF_SIZE) &#123;</span><br><span class="line">        pthread_cond_wait(&amp;pc-&gt;notFull, &amp;pc-&gt;mutex);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 操作数据</span></span><br><span class="line">    pc-&gt;buffer[pc-&gt;in] = item;</span><br><span class="line">    pc-&gt;in = (pc-&gt;in + <span class="number">1</span>) % BUF_SIZE;</span><br><span class="line">    pc-&gt;count++;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 唤醒</span></span><br><span class="line">    pthread_cond_signal(&amp;pc-&gt;notEmpty);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 解锁</span></span><br><span class="line">    pthread_mutex_unlock(&amp;pc-&gt;mutex);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 取出（消费者）</span></span><br><span class="line"><span class="type">int</span> <span class="title function_">remove_item</span><span class="params">(ProducerConsumer *pc)</span> &#123;</span><br><span class="line">    pthread_mutex_lock(&amp;pc-&gt;mutex);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (pc-&gt;count == <span class="number">0</span>) &#123;</span><br><span class="line">        pthread_cond_wait(&amp;pc-&gt;notEmpty, &amp;pc-&gt;mutex);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="type">int</span> item = pc-&gt;buffer[pc-&gt;out];</span><br><span class="line">    pc-&gt;out = (pc-&gt;out + <span class="number">1</span>) % BUF_SIZE;</span><br><span class="line">    pc-&gt;count--;</span><br><span class="line"></span><br><span class="line">    pthread_cond_signal(&amp;pc-&gt;notFull);</span><br><span class="line">    pthread_mutex_unlock(&amp;pc-&gt;mutex);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> item;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-
-]]></content>
-      <tags>
-        <tag>操作系统原理</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>使用hexo搭建github托管的静态网站</title>
-    <url>/2025/06/15/%E4%BD%BF%E7%94%A8hexo%E6%90%AD%E5%BB%BAgithub%E6%89%98%E7%AE%A1%E7%9A%84%E9%9D%99%E6%80%81%E5%8D%9A%E5%AE%A2%E7%BD%91%E7%AB%99/</url>
-    <content><![CDATA[<p>本文详细介绍如何使用 Hexo 框架搭建基于 GitHub Pages 托管的静态博客网站，涵盖环境安装、站点初始化、NexT 主题配置、文章写作和自动化部署的全流程。</p>
-<span id="more"></span>
-
-<h2 id="一-软件安装"><a href="#一-软件安装" class="headerlink" title="一, 软件安装"></a>一, 软件安装</h2><ol>
-<li><p>git</p>
-</li>
-<li><p>node.js (npm是nodejs的包管理工具)</p>
-</li>
-<li><p>hexo</p>
-<p><code>npm install -g hexo-cli</code></p>
-</li>
-</ol>
-<h2 id="二-初始化"><a href="#二-初始化" class="headerlink" title="二, 初始化"></a>二, 初始化</h2><p><code>hexo init blog</code>会自动创建一个blog文件夹</p>
-<p><code>npm install</code>会安装好站点</p>
-<p><code>hexo g</code>构建好网站的结构, 保存在global文件夹里, 每次修改都应该运行这个指令</p>
-<p><code>hexo s</code>在本地模拟运行服务器, 可在浏览器查看效果</p>
-<p><img src="/2025/06/15/%E4%BD%BF%E7%94%A8hexo%E6%90%AD%E5%BB%BAgithub%E6%89%98%E7%AE%A1%E7%9A%84%E9%9D%99%E6%80%81%E5%8D%9A%E5%AE%A2%E7%BD%91%E7%AB%99/image-20250615220640729.png" alt="image-20250615220640729"></p>
-<p>文件夹结构: </p>
-<ol>
-<li>node_modules: 站点使用的插件</li>
-<li>public: 缓存, 生成的站点的根目录就在public</li>
-<li>source: 写的文章, 图片, 图标等资源应该在这里</li>
-<li>source&#x2F;_post: 文章目录</li>
-<li>themes: 主题文件夹</li>
-<li>_config.yml: hexo的主配置文件, 用来配置站点标题, 部署方法等基本信息</li>
-<li>_config.<theme_name>.yml: 主题的配置文件</li>
-<li>package.json: 安装的插件&#x2F;主题的信息</li>
-</ol>
-<h2 id="三-安装NexT主题"><a href="#三-安装NexT主题" class="headerlink" title="三, 安装NexT主题"></a>三, 安装NexT主题</h2><ol>
-<li><p><code>git clone https://github.com/next-theme/hexo-theme-next themes/next</code>把主题下载下来. </p>
-</li>
-<li><p>把next主题文件夹放在theme文件夹里. </p>
-</li>
-<li><p>修改_config.yml的配置:</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">theme: next</span><br></pre></td></tr></table></figure>
-
-<p><strong>这里的next是theme文件夹里的主题文件夹的名字</strong></p>
-</li>
-</ol>
-<h2 id="四-基本配置"><a href="#四-基本配置" class="headerlink" title="四, 基本配置"></a>四, 基本配置</h2><h3 id="blog-config-yml"><a href="#blog-config-yml" class="headerlink" title="blog&#x2F;_config.yml"></a>blog&#x2F;_config.yml</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># Site</span><br><span class="line">title: # 站点的名字, 显示在标签页上</span><br><span class="line">subtitle: 这是subtitle</span><br><span class="line">description: &#x27;&#x27;</span><br><span class="line">author: # 作者名字</span><br><span class="line">language: zh-CN</span><br><span class="line">timezone: Asia/Shanghai</span><br><span class="line"># URL</span><br><span class="line">url: https://&#123;name&#125;.github.io</span><br><span class="line"># Writing</span><br><span class="line">post_asset_folder: true # 在使用hexo new创建文章时, 会新建一个放照片的目录</span><br></pre></td></tr></table></figure>
-
-<h3 id="blog-config-next-yml"><a href="#blog-config-next-yml" class="headerlink" title="blog&#x2F;_config.next.yml"></a>blog&#x2F;_config.next.yml</h3><h4 id="主题"><a href="#主题" class="headerlink" title="主题"></a>主题</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># Schemes</span><br><span class="line">scheme: Muse</span><br><span class="line">#scheme: Mist</span><br><span class="line">#scheme: Pisces</span><br><span class="line">#scheme: Gemini</span><br></pre></td></tr></table></figure>
-<h4 id="图标"><a href="#图标" class="headerlink" title="图标"></a>图标</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 站点的图标, 以source文件夹为根目录</span><br><span class="line">favicon:</span><br><span class="line">  small: /images/favicon.png</span><br><span class="line">  medium: /images/favicon.png</span><br><span class="line">  apple_touch_icon: /images/favicon.png</span><br><span class="line">  safari_pinned_tab: /images/favicon.png</span><br><span class="line">  #android_manifest: /manifest.json</span><br></pre></td></tr></table></figure>
-<h4 id="菜单"><a href="#菜单" class="headerlink" title="菜单"></a>菜单</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">menu:</span><br><span class="line">  home: / || fa fa-home</span><br><span class="line">  about: /about/ || fa fa-user</span><br><span class="line">  tags: /tags/ || fa fa-tags</span><br><span class="line">  categories: /categories/ || fa fa-th</span><br><span class="line">  archives: /archives/ || fa fa-archive</span><br><span class="line">  #schedule: /schedule/ || fa fa-calendar</span><br><span class="line">  #sitemap: /sitemap.xml || fa fa-sitemap</span><br><span class="line">  #commonweal: /404/ || fa fa-heartbeat</span><br></pre></td></tr></table></figure>
-<p>要创建菜单项的文件夹, 使用命令<code>hexo new page &#123;menu_name&#125;</code></p>
-<p>就在source下创建了对应菜单的文件夹</p>
-<p>还要手动修改菜单的信息: </p>
-<p>例如tags菜单, 还需要修改source&#x2F;tags&#x2F;index.html(主要修改type项):</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">---</span><br><span class="line">title: TAGS</span><br><span class="line">date: 2023-01-01</span><br><span class="line">type: &quot;tags&quot;</span><br><span class="line">comments: false</span><br><span class="line">---</span><br></pre></td></tr></table></figure>
-<h4 id="头像"><a href="#头像" class="headerlink" title="头像"></a>头像</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">avatar:</span><br><span class="line">  url: /images/avater.jpg</span><br></pre></td></tr></table></figure>
-
-<h4 id="社交账号"><a href="#社交账号" class="headerlink" title="社交账号"></a>社交账号</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">social:</span><br><span class="line">  GitHub: https://github.com/&#123;name&#125; || fab fa-github</span><br></pre></td></tr></table></figure>
-
-<h2 id="五-部署到github"><a href="#五-部署到github" class="headerlink" title="五, 部署到github"></a>五, 部署到github</h2><h3 id="创建github仓库"><a href="#创建github仓库" class="headerlink" title="创建github仓库"></a>创建github仓库</h3><p>仓库名字: {username}.github.io</p>
-<h3 id="配置好git"><a href="#配置好git" class="headerlink" title="配置好git"></a>配置好git</h3><p><code>git config --global user.name &quot;name&quot;</code></p>
-<p><code>git config --global user.email &quot;name&quot;</code></p>
-<p><code>ssh-keygen -t rsa -C &quot;&#123;email&#125;&quot;</code></p>
-<p>添加ssh公钥到github账号</p>
-<h3 id="在hexo中安装部署到github的插件"><a href="#在hexo中安装部署到github的插件" class="headerlink" title="在hexo中安装部署到github的插件"></a>在hexo中安装部署到github的插件</h3><p><code>npm install hexo-deployer-git --save</code></p>
-<ul>
-<li><p>包会被安装在blog&#x2F;node-modules下</p>
-</li>
-<li><p>–save表示把包的信息记录在package.json中</p>
-</li>
-</ul>
-<h3 id="config-yml配置使用github部署"><a href="#config-yml配置使用github部署" class="headerlink" title="_config.yml配置使用github部署"></a>_config.yml配置使用github部署</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">deploy:</span><br><span class="line">  type: git</span><br><span class="line">  repo: 你的仓库路径</span><br><span class="line">  branch: main</span><br></pre></td></tr></table></figure>
-
-<h3 id="推送博客站点到github"><a href="#推送博客站点到github" class="headerlink" title="推送博客站点到github"></a>推送博客站点到github</h3><p><code>hexo d</code></p>
-<h3 id="访问博客"><a href="#访问博客" class="headerlink" title="访问博客"></a>访问博客</h3><p><code>https://&#123;name&#125;.github.io</code></p>
-<h2 id="六-添加文章"><a href="#六-添加文章" class="headerlink" title="六, 添加文章"></a>六, 添加文章</h2><p><code>hexo new &#123;passagename&#125;</code></p>
-<p>只需编辑source&#x2F;_post&#x2F;里的md文件</p>
-<h2 id="七-插件"><a href="#七-插件" class="headerlink" title="七, 插件"></a>七, 插件</h2><h3 id="local-search"><a href="#local-search" class="headerlink" title="local search"></a>local search</h3><p><code>npm install hexo-generator-searchdb --save</code></p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">search:</span><br><span class="line">  path: search.xml</span><br><span class="line">  field: post</span><br><span class="line">  format: html</span><br><span class="line">  limit: 10000</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># Local search</span><br><span class="line">local_search:</span><br><span class="line">  enable: true</span><br></pre></td></tr></table></figure>
-
-<h2 id="八-一些问题"><a href="#八-一些问题" class="headerlink" title="八, 一些问题"></a>八, 一些问题</h2><h3 id="部署后图片路径不对"><a href="#部署后图片路径不对" class="headerlink" title="部署后图片路径不对"></a>部署后图片路径不对</h3><p>_post目录是这样的结构: </p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">_post:</span><br><span class="line">	artical.md</span><br><span class="line">	artical</span><br><span class="line">		image1.jpg</span><br><span class="line">		image2.jpg</span><br></pre></td></tr></table></figure>
-
-<p>hexo部署后生成的文件夹(public&#x2F;2025&#x2F;6&#x2F;14&#x2F;artical)结构: </p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">artical</span><br><span class="line">	index.html</span><br><span class="line">	image1.jpg</span><br><span class="line">	image2.jpg</span><br></pre></td></tr></table></figure>
-
-<p>index.html中图片的路径是: </p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">/./artical/image1.jpg(多了一个artical)</span><br></pre></td></tr></table></figure>
-
-<blockquote>
-<p>解决方法: 让hexo生成index.html时, 在artical后加一个..&#x2F;</p>
-</blockquote>
-<ol>
-<li><p>修改_config.yml</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">marked:</span><br><span class="line">  prependRoot: true</span><br><span class="line">  postAsset: true</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>修改文件blog\node_modules\hexo-renderer-marked\lib\renderer.js:</p>
-</li>
-</ol>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> (!<span class="regexp">/^(#|\/\/|http(s)?:)/</span>.<span class="title function_">test</span>(href) &amp;&amp; !relative_link &amp;&amp; prependRoot) &#123;</span><br><span class="line">  <span class="keyword">if</span> (!href.<span class="title function_">startsWith</span>(<span class="string">&#x27;/&#x27;</span>) &amp;&amp; !href.<span class="title function_">startsWith</span>(<span class="string">&#x27;\\&#x27;</span>) &amp;&amp; postPath) &#123;</span><br><span class="line">    <span class="keyword">const</span> <span class="title class_">PostAsset</span> = hexo.<span class="title function_">model</span>(<span class="string">&#x27;PostAsset&#x27;</span>);</span><br><span class="line">    <span class="comment">// findById requires forward slash</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// ==================================改动:</span></span><br><span class="line">    <span class="keyword">const</span> fixPostPath = <span class="title function_">join</span>(postPath, <span class="string">&#x27;../&#x27;</span>);</span><br><span class="line">    <span class="keyword">const</span> asset = <span class="title class_">PostAsset</span>.<span class="title function_">findById</span>(<span class="title function_">join</span>(fixPostPath, href.<span class="title function_">replace</span>(<span class="regexp">/\\/g</span>, <span class="string">&#x27;/&#x27;</span>)));</span><br><span class="line">    <span class="comment">//const asset = PostAsset.findById(join(postPath, href.replace(/\\/g, &#x27;/&#x27;)));</span></span><br><span class="line">    <span class="comment">// ====================================;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// asset.path is backward slash in Windows</span></span><br><span class="line">    <span class="keyword">if</span> (asset) href = asset.<span class="property">path</span>.<span class="title function_">replace</span>(<span class="regexp">/\\/g</span>, <span class="string">&#x27;/&#x27;</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  href = url_for.<span class="title function_">call</span>(hexo, href);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-]]></content>
-      <tags>
-        <tag>网站</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>操作系统原理1进程</title>
-    <url>/2026/03/29/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%8E%9F%E7%90%861%E8%BF%9B%E7%A8%8B/</url>
-    <content><![CDATA[<p>介绍进程的基本概念、进程控制块的结构、进程的五种状态及其转换，以及进程创建、阻塞、唤醒、销毁等控制原语。</p>
-<span id="more"></span>
-
-<h1 id="一，进程"><a href="#一，进程" class="headerlink" title="一，进程"></a>一，进程</h1><h3 id="进程的状态"><a href="#进程的状态" class="headerlink" title="进程的状态"></a>进程的状态</h3><ol>
-<li><p>运行态</p>
-</li>
-<li><p>就绪态</p>
-</li>
-<li><p>等待态</p>
-</li>
-</ol>
-<h2 id="进程的控制"><a href="#进程的控制" class="headerlink" title="进程的控制"></a>进程的控制</h2><h3 id="原语"><a href="#原语" class="headerlink" title="原语"></a>原语</h3><blockquote>
-<p>由若干指令组成， 是一种原子操作</p>
-</blockquote>
-<p>在内核态下运行， 通过开关中断实现</p>
-<h4 id="进程控制的原语"><a href="#进程控制的原语" class="headerlink" title="进程控制的原语"></a>进程控制的原语</h4><ol>
-<li>create</li>
-<li>block</li>
-<li>wakeup</li>
-<li>destroy</li>
-</ol>
-<h3 id="进程的挂起和激活"><a href="#进程的挂起和激活" class="headerlink" title="进程的挂起和激活"></a>进程的挂起和激活</h3><ol>
-<li>挂起：suspend， 从内存移动到外存</li>
-<li>激活：active</li>
-</ol>
-<p><img src="/2026/03/29/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%8E%9F%E7%90%861%E8%BF%9B%E7%A8%8B/image-20260330191157883.png"></p>
-<ol>
-<li><p>静止</p>
-<ul>
-<li>静止就绪：放在外存， 不调度</li>
-<li>精致阻塞：等待事件</li>
-</ul>
-</li>
-<li><p>活动</p>
-<ul>
-<li>活动就绪：等待调度</li>
-<li>活动阻塞：等待唤醒</li>
-</ul>
-</li>
-</ol>
-]]></content>
-      <tags>
-        <tag>操作系统原理</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>计算机网络基础知识</title>
-    <url>/2025/06/14/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/</url>
-    <content><![CDATA[<p>计算机网络是分布式系统的基础。本文从物理层到网络层逐层讲解网络通信的原理，包括集线器、交换机、路由器的功能与区别，以及 MAC 地址、IP 地址、路由表、ARP 协议等核心概念。</p>
-<span id="more"></span>
-
-<h2 id="一-物理层"><a href="#一-物理层" class="headerlink" title="一, 物理层"></a>一, 物理层</h2><blockquote>
-<p>为传输数据所需要的物理链路创建、维持、拆除，而提供具有机械的，电子的，功能的和规范的特性</p>
-</blockquote>
-<p>集线器(hub)可以连接多个设备构成网络, 但是半双工, 只能支持很少的设备连接, 工作在物理层</p>
-<p>光猫的一个功能是把光纤的光信号转化为电信号, 是物理层</p>
-<h2 id="二-数据链路层-MAC层"><a href="#二-数据链路层-MAC层" class="headerlink" title="二, 数据链路层(MAC层)"></a>二, 数据链路层(MAC层)</h2><blockquote>
-<p>数据链路层在物理层提供的服务的基础上向网络层提供服务，其最基本的服务是将源自物理层来的数据可靠地传输到相邻节点的目标机网络层。</p>
-</blockquote>
-<h3 id="交换机-switch"><a href="#交换机-switch" class="headerlink" title="交换机(switch)"></a>交换机(switch)</h3><blockquote>
-<p>为接入交换机的任意两个网络节点提供独享的电信号通路</p>
-</blockquote>
-<p>每个设备有一个全球唯一的48位的mac地址. 多个设备连接到交换机的网口上, 交换机内部维护一张网口和mac地址的映射表, 记录交换机的每个网口所连接的设备的mac地址.</p>
-<p>当有设备(mac1)想要向另一个设备(mac2)发送信息时, 他会给交换机发送一个头部记录了mac1和mac2的信息, 交换机会查询映射表, 找到mac2地址所对应的网口, 并发送信息. 如果在映射表中没有找到mac2, 他会向所有网口广播这条信息, mac2设备收到这个信息后把响应发送给交换机, 交换机再发给设备mac1, 并把mac2所对应的网口记录在表里.</p>
-<h4 id="交换机级联"><a href="#交换机级联" class="headerlink" title="交换机级联:"></a>交换机级联:</h4><p>假设有一个网络: </p>
-<p><img src="/2025/06/14/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/image-20250615130310582.png" alt="image-20250615130310582"></p>
-<p>如果A想给D发送信息, switch1发现自己的映射表中没有D的信息, 他就会进行广播. switch2接受到广播后, 知道D设备在自己的二号端口上(如果不知道, switch2还会广播), 便把信息发给D. D响应后, switch1会记录D设备的mac地址对应自己的第四个端口.</p>
-<h4 id="不足"><a href="#不足" class="headerlink" title="不足"></a>不足</h4><p>交换机依然不能构成足够大的网络, 设备和级联层数多后会引起广播泛洪, 且交换机中映射表的大小不够</p>
-<h2 id="三-网络层-IP层"><a href="#三-网络层-IP层" class="headerlink" title="三, 网络层(IP层)"></a>三, 网络层(IP层)</h2><h3 id="ip地址-ipv4"><a href="#ip地址-ipv4" class="headerlink" title="ip地址(ipv4)"></a>ip地址(ipv4)</h3><p>ipv4是一个32位(8*4)的地址, 例如192.168.0.1, 每位数字从0-255.</p>
-<p>ip像mac一样用来表示设备, 但是ip可能会变化, 一个设备可能有多个ip.</p>
-<h3 id="路由表"><a href="#路由表" class="headerlink" title="路由表"></a>路由表</h3><p>一个设备A想给另一个设备B发信息, 知道它的ip后, 还要知道把信息发给谁才行. 路由表就记录了应该发给谁.</p>
-<p>使用命令<code>route</code>可以查看设备的路由表</p>
-<p><img src="/2025/06/14/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/image-20250615132731532.png" alt="image-20250615132731532"></p>
-<h3 id="路由器-router"><a href="#路由器-router" class="headerlink" title="路由器(router)"></a>路由器(router)</h3><blockquote>
-<p>是连接两个或多个网络的硬件设备，在网络间起网关的作用，是读取每一个数据包中的地址然后决定如何传送的专用智能性的网络设备。</p>
-</blockquote>
-<p><img src="/2025/06/14/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/image-20250615135448474.png" alt="image-20250615135448474"></p>
-<ul>
-<li><p>192.168.0.0&#x2F;24中的24是掩码, 表示所有高24位都是192.168.0.x的设备都在这个网络中.</p>
-</li>
-<li><p>路由器连接两个网络, 他既有网络1的ip, 也有网络2的ip, 在两个网络中当网关</p>
-</li>
-</ul>
-<p>如果A要给C(192.168.1.5)发消息, A便会查自己的路由表, 查到给C的ip的信息应该发给网关192.168.0.1. 路由器收到后查路由器自己的路由表, 便把信息从192.168.0.0发送出去.</p>
-<p>发送的线路就是:</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">A	-&gt;	router, router-&gt;C</span><br><span class="line">(0.5)	(0.1)	(1.1)	(1.5)</span><br></pre></td></tr></table></figure>
-
-<p>有了路由器, 每次信息发送都是在子网内进行的.</p>
-<p>在子网中, 知道ip地址, 还要通过arp协议转换为mac地址才可以进行通信.</p>
-<ul>
-<li>平时用的路由器同时有路由器, 交换器, DHCP服务器等功能</li>
-</ul>
-]]></content>
-      <categories>
-        <category>计算机网络</category>
-      </categories>
-      <tags>
-        <tag>计算机网络</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>设计模式-状态模式</title>
-    <url>/2025/06/17/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/</url>
-    <content><![CDATA[<p>状态模式是一种行为设计模式，允许对象在其内部状态改变时改变其行为，仿佛对象的类发生了改变。本文讲解状态模式的结构、适用场景和实现方法。</p>
-<span id="more"></span>
-
-<h2 id="状态模式"><a href="#状态模式" class="headerlink" title="状态模式"></a>状态模式</h2><p><img src="/2025/06/17/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/image-20250617190747435.png" alt="image-20250617190747435"></p>
-<blockquote>
-<p>状态模式: 当一个对象的内在状态改变时允许改变其行为, 这个对象看起来像是改变了其类.</p>
-</blockquote>
-<ul>
-<li>如果没有状态模式, Context类中就要包含状态枚举类, 状态的转换逻辑和每个状态操作的不同都要用if-else或switch语句逐一判断, 所有代码太过集中, 可维护性弱. 违反OC原则, 修改逻辑时要修改而不是添加新代码.</li>
-</ul>
-]]></content>
-      <tags>
-        <tag>设计模式</tag>
       </tags>
   </entry>
 </search>
