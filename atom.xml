@@ -6,7 +6,7 @@
   <link href="https://krythix.github.io/atom.xml" rel="self"/>
   
   <link href="https://krythix.github.io/"/>
-  <updated>2026-05-24T13:25:34.083Z</updated>
+  <updated>2026-07-20T07:32:44.546Z</updated>
   <id>https://krythix.github.io/</id>
   
   <author>
@@ -15,6 +15,19 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>tkinter</title>
+    <link href="https://krythix.github.io/2026/07/20/tkinter/"/>
+    <id>https://krythix.github.io/2026/07/20/tkinter/</id>
+    <published>2026-07-20T07:32:44.000Z</published>
+    <updated>2026-07-20T07:32:44.546Z</updated>
+    
+    
+    
+    
+    
+  </entry>
   
   <entry>
     <title>Docker使用教程</title>
